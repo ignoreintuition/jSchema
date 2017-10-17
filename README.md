@@ -1,4 +1,5 @@
 # jSchema
+![jschema](https://user-images.githubusercontent.com/5210420/31661268-174230cc-b308-11e7-931c-44d423b80960.png)
 Data Modeling in JavaScript
 
 jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets
