@@ -84,10 +84,11 @@
     // @namespace jSchema
     // @method orderBy
     // @param {String} d dataset
-    // @param {String} attr the attribute to sort by
-    _schema.orderBy = function(d, attr) {
+    // @param {String} attr object containing the attribute to sort by & orderBy
+    // e.g. {name: 'height, order: 'des'}
+    _schema.orderBy = function(d, attr ) {
       return data[this.tables[d].id].sort(function(d1, d2) {
-        return d1[attr] - d2[attr];
+        return (attr.order == 'asc') ? d1[attr.name] - d2[attr.name] : d2[attr.name] - d1[attr.name];
       });
     }
 
