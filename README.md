@@ -6,7 +6,6 @@ into in a common schema, assign primary / foreign key relationships, aggregate, 
 in the browser.
 
 ## How to Use
-
 jSchema is going to create an object assigned globally to the window called `window.jSchema`.  You can then add dataset directly
 
 ```Javascript
@@ -31,4 +30,16 @@ Multiple datasets that have primary / foreign key relationships can be joined as
 
 ```Javascript
 s.join("education", "gender")
+```
+
+You can drop tables that are no longer needed in the schema with the drop method
+
+```Javascript
+s.drop("gender")
+```
+
+If you want to sort a dataset by an attribute use the orderBy method:
+
+```Javascript
+s.orderBy('education', "Count")
 ```
