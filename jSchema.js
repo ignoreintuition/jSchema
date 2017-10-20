@@ -2,7 +2,8 @@
   // 'use strict';
 
   function jSchema() {
-    var data = [],
+    var version = '0.1.0';
+        data = [],
         counter = 0,
         _schema = {
           tables: {},
@@ -23,7 +24,7 @@
       this.tables[name].rows = d.length;
       this.tables[name].col = Object.keys(d[0]);
       this.tables[name].col.forEach(function(c, i){
-        self.tables[name].col[i] = c.toUpperCase();
+        self.tables[name].col[i] = c;
       });
       data.push(d);
       this.length = data.length;
