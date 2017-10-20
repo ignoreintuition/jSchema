@@ -43,3 +43,21 @@ If you want to sort a dataset by an attribute use the orderBy method:
 ```Javascript
 s.orderBy('education', "Count")
 ```
+
+To Group by you need to provide the dataset name, the name of the dimension to group by, and the metrics you wish to aggregate:
+
+```Javascript
+s.groupBy("GENDER", "Gender", "Count")
+```
+Output
+```JSON [
+  {
+    "dim": "Male",
+    "val": 37575
+  },
+  {
+    "dim": "Female",
+    "val": 44074
+  }
+]
+```
