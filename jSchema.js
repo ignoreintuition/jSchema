@@ -99,8 +99,28 @@
       });
     }
 
-    _schema.groupBy = function() {
-      //
+    // group a table by dimension
+    // @namespace jSchema
+    // @method groupBy
+    // @param {String} d dataset
+    // @param {String} dim dimension to group by
+    // @param {String} metric metric to aggregate
+    _schema.groupBy = function(d, dim, metric) {
+      d = d.toUpperCase();
+      var s = data[this.tables[d].id]
+      var gb = _distinct(s, dim)
+      var reduceArr = []
+      gb.forEach(function(a){
+        var f = s.filter(function(b){
+          return b[dim] == a;
+        })
+        var fr = f.reduce(function(b, c){
+          return {dim: a, val: b.val + c[metric] }
+        }, {dim: a, val: 0})
+        reduceArr.push(fr);
+      })
+      return reduceArr;
+
     }
 
     _schema.insert = function() {
@@ -113,6 +133,20 @@
 
     return _schema;
   }
+
+  //helper functions
+
+  function _distinct(d, v){
+    var unique = {}
+    var arr = [];
+    for( var i in d ){
+      if( typeof(unique[d[i][v]]) == "undefined"){
+        arr.push(d[i][v]);
+      }
+      unique[d[i][v]] = "";
+    }
+    return arr;
+  };
 
   if (typeof(window.jSchema) === 'undefined') {
     window.jSchema = jSchema();
