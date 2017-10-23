@@ -2,7 +2,7 @@
   // 'use strict';
 
   function jSchema() {
-    var version = '0.2.0',
+    var version = '0.2.1',
       data = [],
       counter = 0,
       _schema = {
@@ -15,6 +15,7 @@
     // @method add
     // @param {Object} d - a dataset
     // @param {Object} md - metadata about the dataset (name, primaryKey)
+    // TODO add a unique value to datasets
     _schema.add = function(d, metadata) {
       if (typeof d != "object") {
         console.log("Warning:" + d + " is not an object")
@@ -105,6 +106,7 @@
     // @param {String} d dataset
     // @param {String} attr object containing the attribute to sort by & orderBy
     // e.g. {name: 'height, order: 'des'}
+    // TODO add in option to assign a table name
     _schema.orderBy = function(d, attr) {
       d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
@@ -124,6 +126,7 @@
     // @param {String} d dataset
     // @param {String} dim dimension to group by
     // @param {String} metric metric to aggregate
+    // TODO Add in an option to assign a table name
     _schema.groupBy = function(d, dim, metric) {
       d = d.toUpperCase();
       var dataset = data[this.tables[d].id],
@@ -150,10 +153,21 @@
       return this;
     };
 
+    //TODO flesh out a method to insert a new element onto a table
     _schema.insert = function() {
       //
     };
 
+    //TODO flesh out a method to filter on a particular dimension / value
+    _schema.filter = function(){
+      //
+    }
+
+    // update a table with a new dataset
+    // @namespace jSchema
+    // @method update
+    // @param {String} d dataset
+    // @param {Object} data new dataset to replace d
     _schema.update = function(d, data) {
       d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
