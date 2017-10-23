@@ -61,3 +61,15 @@ Output
   }
 ]
 ```
+
+If a new version of the dataset is made available you can update the existing table in the schema by running the update method
+
+```Javascript
+s.update("gender", data);
+```
+
+By default all temporary datasets (joins, group by, order by) added to the schema will be prefixed with the namespace WORK. (e.g. joining two tables NAMES and LOCATIONS will result in a table added to the schema called WORK.NAMES_LOCATIONS).  Calling the cleanUp method will remove all datasets added to the work namespace
+
+```Javascript
+s.cleanUp();
+```
