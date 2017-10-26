@@ -1,0 +1,21 @@
+{
+  "name": "jSchema",
+  "version": "1.0.0",
+  "description": "Data Modeling in JavaScript",
+  "main": "jSchema.js",
+  "scripts": {
+    "init": "mkdir dist",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean && npm run init",
+    "build": "./node_modules/.bin/babel src -d dist --presets es2015 && ./node_modules/.bin/uglifyjs ./dist/jSchema.js -o ./dist/jSchema.min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Brian T. Greig",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "uglify-js": "^3.1.5"
+  }
+}
