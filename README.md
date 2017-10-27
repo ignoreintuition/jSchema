@@ -1,14 +1,12 @@
 # jSchema
-## Data Modeling in JavaScript
+Data Modeling in JavaScript
+jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets into in a common schema, define relationships, aggregate, join, and subset datasets to make data easier to work with in the browser.
 
 ![entity relationship diagram - new page 1](https://user-images.githubusercontent.com/5210420/32084304-50e6bdbc-ba96-11e7-92b8-cfab13866fe0.png)
 
-jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets
-into in a common schema, assign primary / foreign key relationships, aggregate, join, and subset datasets to make data easier to work with
-in the browser.
+jSchema is going to create an object assigned globally to the window called `window.jSchema`.  This object is a metadata representation of all your datasets containing the table names, column names, and keys that define sets.  The data itself is stored within a closure within the object and is retrieved via a getter function.  Joining data, aggregating data, and filtering data will create a new dataset in your WORK namespace that will persist on the page until either you delete the table or you run a cleanUp method.
 
 ## How to Use
-jSchema is going to create an object assigned globally to the window called `window.jSchema`.  You can then add dataset directly
 
 ```Javascript
 var s =  window.jSchema
@@ -75,3 +73,6 @@ By default all temporary datasets (joins, group by, order by) added to the schem
 ```Javascript
 s.cleanUp();
 ```
+
+# Contact
+Questions, comments, feature requests, etc are always welcome.  I am @ignoreintuition on Twitter.
