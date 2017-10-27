@@ -1,5 +1,7 @@
 # jSchema
-Data Modeling in JavaScript
+## Data Modeling in JavaScript
+
+![entity relationship diagram - new page 1](https://user-images.githubusercontent.com/5210420/32084304-50e6bdbc-ba96-11e7-92b8-cfab13866fe0.png)
 
 jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets
 into in a common schema, assign primary / foreign key relationships, aggregate, join, and subset datasets to make data easier to work with
