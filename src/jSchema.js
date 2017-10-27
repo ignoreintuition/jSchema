@@ -2,7 +2,7 @@
   // 'use strict';
 
   function jSchema() {
-    const version = '0.3.0';
+    const version = '0.3.1';
     var data = [],
       counter = 0,
       _schema = {
