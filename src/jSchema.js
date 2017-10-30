@@ -31,7 +31,7 @@
       this.tables[name].pk = (metadata && metadata.primaryKey) ? metadata.primaryKey : null;
       this.tables[name].rows = d.length;
       this.tables[name].col = Object.keys(d[0]);
-      this.tables[name].col.forEach((c, i) =>{
+      this.tables[name].col.forEach((c, i) => {
         this.tables[name].col[i] = c;
       });
       data.push(d);
@@ -156,9 +156,31 @@
       //
     };
 
-    //TODO flesh out a method to filter on a particular dimension / value
-    _schema.filter = function(){
-      //
+    // Filter a table by one or more predicates
+    // @namespace jSchema
+    // @method filter
+    // @param {String} d dataset
+    // @param {String} predicate
+    // @param {String} expression
+    // multiple pairs of predicates and expressions can be strung together
+    _schema.filter = function(d, clauses) {
+      d = d.toUpperCase();
+      if (arguments.length < 3 || arguments.length % 2 == 0) {
+        console.log("Please include table, predicate, and expression");
+        return 0;
+      }
+      let subsetData = data[this.tables[d].id];
+      for (var i = 1; i < arguments.length; i += 2) {
+        let predicate = arguments[i],
+          expression = arguments[i + 1];
+        subsetData = subsetData.filter(function(d) {
+          return d[predicate] == expression;
+        });
+        this.add(subsetData, {
+          name: "WORK." + d + "_" + arguments[1] + "_" + arguments[2]
+        });
+        return this;
+      }
     }
 
     // update a table with a new dataset

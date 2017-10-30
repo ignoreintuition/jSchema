@@ -1,6 +1,6 @@
 {
   "name": "jschema.js",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Data Modeling in JavaScript",
   "main": "jschema.js",
   "scripts": {

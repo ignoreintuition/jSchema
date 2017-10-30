@@ -6,7 +6,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   // 'use strict';
 
   function jSchema() {
-    var version = '0.3.0';
+    var version = '0.3.1';
     var data = [],
         counter = 0,
         _schema = {
@@ -165,16 +165,44 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     };
 
     //TODO flesh out a method to filter on a particular dimension / value
-    _schema.filter = function () {}
-    //
+    _schema.filter = function (d, clauses) {
+      var _arguments = arguments,
+          _this3 = this;
 
+      d = d.toUpperCase();
+      if (arguments.length < 3 || arguments.length % 2 == 0) {
+        console.log("Please include table, predicate, and expression");
+        return 0;
+      }
+      var subsetData = data[this.tables[d].id];
+
+      var _loop = function _loop() {
+        var predicate = _arguments[i],
+            expression = _arguments[i + 1];
+        subsetData = subsetData.filter(function (d) {
+          return d[predicate] == expression;
+        });
+        _this3.add(subsetData, {
+          name: "WORK." + d + "_" + _arguments[1] + "_" + _arguments[2]
+        });
+        return {
+          v: _this3
+        };
+      };
+
+      for (var i = 1; i < arguments.length; i += 2) {
+        var _ret = _loop();
+
+        if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+      }
+    };
 
     // update a table with a new dataset
     // @namespace jSchema
     // @method update
     // @param {String} d dataset
     // @param {Object} data new dataset to replace d
-    ;_schema.update = function (d, data) {
+    _schema.update = function (d, data) {
       d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
       var pk = this.tables[d].pk;
