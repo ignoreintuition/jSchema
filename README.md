@@ -1,4 +1,7 @@
 # jSchema
+
+![logo](https://user-images.githubusercontent.com/5210420/32085476-48b25564-ba9d-11e7-8a6e-9e2df9cd5ed5.png)
+
 Data Modeling in JavaScript
 jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets into in a common schema, define relationships, aggregate, join, and subset datasets to make data easier to work with in the browser.
 
@@ -60,6 +63,12 @@ Output
     "val": 44074
   }
 ]
+```
+
+To filter a dataset you can call the filter method and pass three of more arguments.  First argument is always the table name.  The second and third are the field to filter by and the value to filter it on.  Additional pairs can be included as 4th, 5th parameters and so on.  A filtered dataset will be created in the WORK space.
+
+```Javascript
+s.filter('gender', 'Gender', 'Female')
 ```
 
 If a new version of the dataset is made available you can update the existing table in the schema by running the update method
