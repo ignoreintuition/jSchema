@@ -32,25 +32,33 @@ fetch("education.json")
 Multiple datasets that have primary / foreign key relationships can be joined as such:
 
 ```Javascript
-s.join("education", "gender")
+s.join("EDUCATION", "GENDER")
 ```
 
 You can drop tables that are no longer needed in the schema with the drop method
 
 ```Javascript
-s.drop("gender")
+s.drop("GENDER")
 ```
 
 If you want to sort a dataset by an attribute use the orderBy method:
 
 ```Javascript
-s.orderBy('education', "Count")
+s.orderBy("GENDER", {
+  clause: "Count",
+  order: "asc",
+  name: "sortBy"
+})
 ```
 
 To Group by you need to provide the dataset name, the name of the dimension to group by, and the metrics you wish to aggregate:
 
 ```Javascript
-s.groupBy("GENDER", "Gender", "Count")
+s.groupBy("GENDER", {
+  dim: "Gender",
+  metric: "Count",
+  name: "sortBy"
+})
 ```
 Output
 ```JSON [
@@ -68,13 +76,13 @@ Output
 To filter a dataset you can call the filter method and pass three of more arguments.  First argument is always the table name.  The second and third are the field to filter by and the value to filter it on.  Additional pairs can be included as 4th, 5th parameters and so on.  A filtered dataset will be created in the WORK space.
 
 ```Javascript
-s.filter('gender', 'Gender', 'Female')
+s.filter('GENDER', 'Gender', 'Female')
 ```
 
 If a new version of the dataset is made available you can update the existing table in the schema by running the update method
 
 ```Javascript
-s.update("gender", data);
+s.update("GENDER", data);
 ```
 
 By default all temporary datasets (joins, group by, order by) added to the schema will be prefixed with the namespace WORK. (e.g. joining two tables NAMES and LOCATIONS will result in a table added to the schema called WORK.NAMES_LOCATIONS).  Calling the cleanUp method will remove all datasets added to the work namespace

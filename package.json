@@ -1,21 +1,33 @@
 {
   "name": "jschema.js",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "Data Modeling in JavaScript",
   "main": "jschema.js",
   "scripts": {
     "init": "mkdir dist",
     "clean": "rm -rf dist",
     "prebuild": "npm run clean && npm run init",
-    "build": "./node_modules/.bin/babel src -d dist --presets es2015 && ./node_modules/.bin/uglifyjs ./dist/jschema.js -o ./dist/jschema.min.js",
+    "jshint": "./node_modules/.bin/jshint ./src/jschema.js",
+    "babel": "./node_modules/.bin/babel src -d dist --presets es2015 ",
+    "minify": "./node_modules/.bin/uglifyjs ./dist/jschema.js -o ./dist/jschema.min.js",
+    "build": "npm run -s jshint && npm run -s babel && npm run -s minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "data",
+    "relational",
+    "json",
+    "javascript",
+    "database",
+    "schema",
+    "data modeling"
+  ],
   "author": "Brian T. Greig",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
+    "jshint": "^2.9.5",
     "uglify-js": "^3.1.5"
   }
 }

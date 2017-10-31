@@ -2,11 +2,13 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+/*jshint esversion: 6 */
+
 (function () {
   // 'use strict';
 
   function jSchema() {
-    var version = '0.3.1';
+    var version = '0.3.5';
     var data = [],
         counter = 0,
         _schema = {
@@ -28,13 +30,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         return;
       }
       var name = metadata && metadata.name ? metadata.name.toUpperCase() : "TABLE" + counter++;
-      if (_checkUnique(name, this.tables) == false) {
+      if (_checkUnique(name, this.tables) === false) {
         console.log("Warning: " + name + " already exists in schema");
         return 0;
       }
+      d = _colToUppercase(d);
+
       this.tables[name] = {};
       this.tables[name].id = data.length;
-      this.tables[name].pk = metadata && metadata.primaryKey ? metadata.primaryKey : null;
+      this.tables[name].pk = metadata && metadata.primaryKey ? metadata.primaryKey.toUpperCase() : null;
       this.tables[name].rows = d.length;
       this.tables[name].col = Object.keys(d[0]);
       this.tables[name].col.forEach(function (c, i) {
@@ -75,7 +79,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
             for (var attrname in left) {
               dest[d1 + "." + attrname] = left[attrname];
             }
-            for (var attrname in right) {
+            for (attrname in right) {
               dest[d2 + "." + attrname] = right[attrname];
             }
             target.push(dest);
@@ -111,17 +115,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     // @method orderBy
     // @param {String} d dataset
     // @param {String} attr object containing the attribute to sort by & orderBy
-    // e.g. {name: 'height, order: 'des'}
-    // TODO add in option to assign a table name
+    // e.g. {clause: 'height, order: 'des', name: 'tableName'}
     _schema.orderBy = function (d, attr) {
+      attr = attr || {};
+      if (attr.clause === undefined) return 0;else attr.clause = attr.clause.toUpperCase();
+
       d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
-      attr.order = attr.order != undefined && attr.order.toUpperCase() == 'ASC' ? 'ASC' : 'DESC';
+      attr.order = attr.order !== undefined && attr.order.toUpperCase() == 'ASC' ? 'ASC' : 'DESC';
       var orderByData = data[this.tables[d].id].sort(function (d1, d2) {
-        return attr.order == 'ASC' ? d1[attr.name] - d2[attr.name] : d2[attr.name] - d1[attr.name];
+        return attr.order == 'ASC' ? d1[attr.clause] - d2[attr.clause] : d2[attr.clause] - d1[attr.clause];
       });
       this.add(orderByData, {
-        name: "WORK." + d + "_" + attr.name + "_" + attr.order
+        name: attr.name || "WORK." + d + "_" + attr.clause + "_" + attr.order,
+        primaryKey: attr.clause
       });
       return this;
     };
@@ -130,22 +137,26 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     // @namespace jSchema
     // @method groupBy
     // @param {String} d dataset
-    // @param {String} dim dimension to group by
-    // @param {String} metric metric to aggregate
-    // TODO Add in an option to assign a table name
-    _schema.groupBy = function (d, dim, metric) {
-      d = d.toUpperCase();
+    // @param {Object} attr dimension to group by and measure to aggregate
+    // e.g. {dim: 'height, metric: 'count', name: 'tableName'}
+    _schema.groupBy = function (d, attr) {
+      attr = attr || {};
+      if (attr.dim === undefined || attr.metric === undefined) return 0;else {
+        attr.dim = attr.dim.toUpperCase();
+        attr.metric = attr.metric.toUpperCase();
+      }
+
       var dataset = data[this.tables[d].id],
-          uniqueDimensions = _distinct(dataset, dim),
+          uniqueDimensions = _distinct(dataset, attr.dim),
           groupByData = [];
       uniqueDimensions.forEach(function (ud) {
         var filterDataset = dataset.filter(function (d) {
-          return d[dim] == ud;
+          return d[attr.dim] == ud;
         });
         var reducedDataset = filterDataset.reduce(function (a, b) {
           return {
             dim: ud,
-            val: a.val + b[metric]
+            val: a.val + b[attr.metric]
           };
         }, {
           dim: ud,
@@ -154,47 +165,35 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
         groupByData.push(reducedDataset);
       });
       this.add(groupByData, {
-        name: "WORK." + d + "_" + dim + "_" + metric
+        name: attr.name || "WORK." + d + "_" + attr.dim + "_" + attr.metric,
+        primaryKey: attr.name
       });
       return this;
     };
 
-    //TODO flesh out a method to insert a new element onto a table
-    _schema.insert = function () {
-      //
-    };
-
-    //TODO flesh out a method to filter on a particular dimension / value
+    // Filter a table by one or more predicates
+    // @namespace jSchema
+    // @method filter
+    // @param {String} d dataset
+    // @param {String} predicate
+    // @param {String} expression
+    // multiple pairs of predicates and expressions can be strung together
     _schema.filter = function (d, clauses) {
-      var _arguments = arguments,
-          _this3 = this;
-
       d = d.toUpperCase();
-      if (arguments.length < 3 || arguments.length % 2 == 0) {
+      if (arguments.length < 3 || arguments.length % 2 === 0) {
         console.log("Please include table, predicate, and expression");
         return 0;
       }
       var subsetData = data[this.tables[d].id];
-
-      var _loop = function _loop() {
-        var predicate = _arguments[i],
-            expression = _arguments[i + 1];
-        subsetData = subsetData.filter(function (d) {
-          return d[predicate] == expression;
-        });
-        _this3.add(subsetData, {
-          name: "WORK." + d + "_" + _arguments[1] + "_" + _arguments[2]
-        });
-        return {
-          v: _this3
-        };
-      };
-
       for (var i = 1; i < arguments.length; i += 2) {
-        var _ret = _loop();
-
-        if ((typeof _ret === "undefined" ? "undefined" : _typeof(_ret)) === "object") return _ret.v;
+        var predicate = arguments[i].toUpperCase(),
+            expression = arguments[i + 1];
+        subsetData = _filterPredicate(subsetData, predicate, expression);
       }
+      this.add(subsetData, {
+        name: "WORK." + d + "_" + arguments[1] + "_" + arguments[2]
+      });
+      return this;
     };
 
     // update a table with a new dataset
@@ -227,7 +226,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     };
 
     return _schema;
-  };
+  }
 
   //*********** helper functions ********************
 
@@ -242,7 +241,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       unique[d[i][v]] = "";
     }
     return arr;
-  };
+  }
 
   // verifies that a table name is unique in the schema
   function _checkUnique(d, a) {
@@ -262,6 +261,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     } else {
       return true;
     }
+  }
+
+  function _filterPredicate(data, p, e) {
+    var subset = data.filter(function (d) {
+      return d[p] == e;
+    });
+    return subset;
+  }
+
+  function _colToUppercase(d) {
+    for (var i = 0; i < d.length; i++) {
+      var a = d[i];
+      for (var key in a) {
+        var temp;
+        if (a.hasOwnProperty(key)) {
+          temp = a[key];
+          delete a[key];
+          a[key.toUpperCase()] = temp;
+        }
+      }
+      d[i] = a;
+    }
+    return d;
   }
 
   if (typeof window.jSchema === 'undefined') {
