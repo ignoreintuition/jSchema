@@ -8,7 +8,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   // 'use strict';
 
   function jSchema() {
-    var version = '0.3.5';
+    var VERSION = '0.3.6';
     var data = [],
         counter = 0,
         _schema = {
@@ -26,14 +26,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       var _this = this;
 
       if ((typeof d === "undefined" ? "undefined" : _typeof(d)) != "object") {
-        console.log("Warning:" + d + " is not an object");
-        return;
-      }
-      var name = metadata && metadata.name ? metadata.name.toUpperCase() : "TABLE" + counter++;
-      if (_checkUnique(name, this.tables) === false) {
-        console.log("Warning: " + name + " already exists in schema");
+        _log(1, d + " is not an object");
         return 0;
       }
+      var name = metadata && metadata.name ? metadata.name.toUpperCase() : "TABLE" + counter++;
+      if (_checkUnique(name, this.tables) === false) return 0;
       d = _colToUppercase(d);
 
       this.tables[name] = {};
@@ -139,9 +136,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     // @param {String} d dataset
     // @param {Object} attr dimension to group by and measure to aggregate
     // e.g. {dim: 'height, metric: 'count', name: 'tableName'}
+    // TODO: Add different aggregation methods
+
     _schema.groupBy = function (d, attr) {
       attr = attr || {};
-      if (attr.dim === undefined || attr.metric === undefined) return 0;else {
+      if (attr.dim === undefined || attr.metric === undefined) {
+        _log(1, "Must include a dimension and metrics to group by");
+        return 0;
+      } else {
         attr.dim = attr.dim.toUpperCase();
         attr.metric = attr.metric.toUpperCase();
       }
@@ -181,7 +183,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     _schema.filter = function (d, clauses) {
       d = d.toUpperCase();
       if (arguments.length < 3 || arguments.length % 2 === 0) {
-        console.log("Please include table, predicate, and expression");
+        _log(1, "Please include table, predicate, and expression");
         return 0;
       }
       var subsetData = data[this.tables[d].id];
@@ -224,7 +226,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       }
       return this;
     };
-
+    console.log("jschema.js version " + VERSION + " loaded.");
     return _schema;
   }
 
@@ -247,6 +249,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   function _checkUnique(d, a) {
     for (var key in a) {
       if (key == d) {
+        _log(1, name + " already exists in schema");
         return false;
       }
     }
@@ -256,7 +259,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
   // checks to ensure that a table exists in the schema
   function _checkForTable(d, a) {
     if (a[d] === undefined) {
-      console.log("Warning: " + d + " does not exist in schema.");
+      _log(1, d + " does not exist in schema.");
       return false;
     } else {
       return true;
@@ -284,6 +287,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       d[i] = a;
     }
     return d;
+  }
+
+  function _log(c, t) {
+    var log = ["INFO", "WARNING", "ERROR"],
+        logLvl = 0;
+    if (c > logLvl) console.log(log[c] + ": " + t);
   }
 
   if (typeof window.jSchema === 'undefined') {
