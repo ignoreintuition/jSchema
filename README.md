@@ -91,5 +91,8 @@ By default all temporary datasets (joins, group by, order by) added to the schem
 s.cleanUp();
 ```
 
+# Testing
+To run mocha test scripts from the terminal type npm test.
+
 # Contact
-Questions, comments, feature requests, etc are always welcome.  I am @ignoreintuition on Twitter.
+Questions, comments, feature requests, etc are always welcome.  I am [@ignoreintuition](https://twitter.com/IgnoreIntuition) on Twitter.
