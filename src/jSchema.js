@@ -1,10 +1,10 @@
 /*jshint esversion: 6 */
 
-(function() {
+define (function(require) {
   // 'use strict';
 
   function jSchema() {
-    const VERSION = '0.3.6';
+    const VERSION = '0.4.0';
     var data = [],
       counter = 0,
       _schema = {
@@ -288,7 +288,5 @@
       console.log(log[c] + ": " + t);
   }
 
-  if (typeof(window.jSchema) === 'undefined') {
-    window.jSchema = jSchema();
-  }
-})();
+  return jSchema;
+});

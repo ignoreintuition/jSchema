@@ -4,11 +4,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 /*jshint esversion: 6 */
 
-(function () {
+define(function (require) {
   // 'use strict';
 
   function jSchema() {
-    var VERSION = '0.3.6';
+    var VERSION = '0.4.0';
     var data = [],
         counter = 0,
         _schema = {
@@ -295,7 +295,5 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     if (c > logLvl) console.log(log[c] + ": " + t);
   }
 
-  if (typeof window.jSchema === 'undefined') {
-    window.jSchema = jSchema();
-  }
-})();
+  return jSchema;
+});

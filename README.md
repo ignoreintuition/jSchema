@@ -11,10 +11,21 @@ jSchema is going to create an object assigned globally to the window called `win
 
 ## How to Use
 
+### requirejs
+jschema.js uses requirejs to modularly load the library and is included in the package.json.  require.js can be moved to the lib directory of your project and included as
+
+```html
+<script data-main="main" src="lib/require.js"></script></body>
+```
+where main is main.js.  You can then add jSchema to your application as such (in this case main.js):
+
 ```Javascript
-var s =  window.jSchema
-s.add([{a:1, b:2}])
-s.add([{b:2, c:3}], {name:"named_table", primaryKey:"b"})
+requirejs(['lib/jschema'], function(jSchema){
+  var s = new jSchema;
+
+  s.add([{a:1, b:2}])
+  s.add([{b:2, c:3}], {name:"named_table", primaryKey:"b"})
+});
 ```
 
 Or load data from external sources
