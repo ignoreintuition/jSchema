@@ -43,7 +43,7 @@ fetch("education.json")
 Multiple datasets that have primary / foreign key relationships can be joined as such:
 
 ```Javascript
-s.join("EDUCATION", "GENDER")
+s.join("EDUCATION", "GENDER", {name: "joinTable"})
 ```
 
 You can drop tables that are no longer needed in the schema with the drop method

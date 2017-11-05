@@ -4,7 +4,7 @@ define (function(require) {
   // 'use strict';
 
   function jSchema() {
-    const VERSION = '0.4.0';
+    const VERSION = '0.4.1';
     var data = [],
       counter = 0,
       _schema = {
@@ -56,7 +56,8 @@ define (function(require) {
     // @method join
     // @param {String} d1 dataset
     // @param {String} d2 dataset
-    _schema.join = function(d1, d2) {
+    _schema.join = function(d1, d2, attr) {
+      attr = attr || {};
       d1 = d1.toUpperCase();
       d2 = d2.toUpperCase();
       var target = [];
@@ -77,7 +78,7 @@ define (function(require) {
         });
       });
       this.add(target, {
-        name: "WORK." + d1 + "_" + d2
+        name: attr.name || "WORK." + d1 + "_" + d2
       });
       return this;
     };
