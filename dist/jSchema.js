@@ -8,7 +8,7 @@ define(function (require) {
   // 'use strict';
 
   function jSchema() {
-    var VERSION = '0.4.0';
+    var VERSION = '0.4.1';
     var data = [],
         counter = 0,
         _schema = {

@@ -1,0 +1,102 @@
+[
+ {
+   "Education": "Did not complete high school",
+   "Age_Group": "25-34",
+   "Count": 5416
+ },
+ {
+   "Education": "Did not complete high school",
+   "Age_Group": "35-44",
+   "Count": 5030
+ },
+ {
+   "Education": "Did not complete high school",
+   "Age_Group": "45-54",
+   "Count": 5777
+ },
+ {
+   "Education": "Did not complete high school",
+   "Age_Group": "55-64",
+   "Count": 7606
+ },
+ {
+   "Education": "Did not complete high school",
+   "Age_Group": ">64",
+   "Count": 13746
+ },
+ {
+   "Education": "Completed high school",
+   "Age_Group": "25-34",
+   "Count": 16431
+ },
+ {
+   "Education": "Completed high school",
+   "Age_Group": "35-44",
+   "Count": 1855
+ },
+ {
+   "Education": "Completed high school",
+   "Age_Group": "45-54",
+   "Count": 9435
+ },
+ {
+   "Education": "Completed high school",
+   "Age_Group": "55-64",
+   "Count": 8795
+ },
+ {
+   "Education": "Completed high school",
+   "Age_Group": ">64",
+   "Count": 7558
+ },
+ {
+   "Education": "College,1-3 years",
+   "Age_Group": "25-34",
+   "Count": 8555
+ },
+ {
+   "Education": "College,1-3 years",
+   "Age_Group": "35-44",
+   "Count": 5576
+ },
+ {
+   "Education": "College,1-3 years",
+   "Age_Group": "45-54",
+   "Count": 3124
+ },
+ {
+   "Education": "College,1-3 years",
+   "Age_Group": "55-64",
+   "Count": 2524
+ },
+ {
+   "Education": "College,1-3 years",
+   "Age_Group": ">64",
+   "Count": 2503
+ },
+ {
+   "Education": "College,4 or more years",
+   "Age_Group": "25-34",
+   "Count": 9771
+ },
+ {
+   "Education": "College,4 or more years",
+   "Age_Group": "35-44",
+   "Count": 7596
+ },
+ {
+   "Education": "College,4 or more years",
+   "Age_Group": "45-54",
+   "Count": 3904
+ },
+ {
+   "Education": "College,4 or more years",
+   "Age_Group": "55-64",
+   "Count": 3109
+ },
+ {
+   "Education": "College,4 or more years",
+   "Age_Group": ">64",
+   "Count": 2483
+ }
+]

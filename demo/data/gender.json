@@ -1,0 +1,52 @@
+[
+ {
+   "Gender": "Male",
+   "Age_Group": "25-34",
+   "Count": 5416
+ },
+ {
+   "Gender": "Male",
+   "Age_Group": "35-44",
+   "Count": 5030
+ },
+ {
+   "Gender": "Male",
+   "Age_Group": "45-54",
+   "Count": 5777
+ },
+ {
+   "Gender": "Male",
+   "Age_Group": "55-64",
+   "Count": 7606
+ },
+ {
+   "Gender": "Male",
+   "Age_Group": ">64",
+   "Count": 13746
+ },
+ {
+   "Gender": "Female",
+   "Age_Group": "25-34",
+   "Count": 16431
+ },
+ {
+   "Gender": "Female",
+   "Age_Group": "35-44",
+   "Count": 1855
+ },
+ {
+   "Gender": "Female",
+   "Age_Group": "45-54",
+   "Count": 9435
+ },
+ {
+   "Gender": "Female",
+   "Age_Group": "55-64",
+   "Count": 8795
+ },
+ {
+   "Gender": "Female",
+   "Age_Group": ">64",
+   "Count": 7558
+ }
+]
