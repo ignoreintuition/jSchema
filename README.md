@@ -9,6 +9,10 @@ jSchema is a framework for modeling data in JavaScript.  By using fundamental da
 
 jSchema is going to create an object assigned globally to the window called `window.jSchema`.  This object is a metadata representation of all your datasets containing the table names, column names, and keys that define sets.  The data itself is stored within a closure within the object and is retrieved via a getter function.  Joining data, aggregating data, and filtering data will create a new dataset in your WORK namespace that will persist on the page until either you delete the table or you run a cleanUp method.
 
+## Demo
+
+A complete working demo of how to load tables, join tables, and aggregate tables can be found in the repository in the demo folder.  
+
 ## How to Use
 
 ### requirejs

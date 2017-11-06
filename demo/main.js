@@ -1,19 +1,45 @@
-requirejs(['../dist/jschema'], function(jSchema){
-  //s.add([{a:1, b:2}])
-  //s.add([{b:2, c:3}], {name:"named_table", primaryKey:"b"})
+requirejs(['../dist/jschema'], function(jSchema) {
   var s = new jSchema;
   fetch("data/education.json")
-  .then(response => response.json())
-  .then(json => s.add(json, {
-    name: "education",
-    primaryKey: "Age_Group"
-  }))
-  .then(fetch("data/gender.json")
     .then(response => response.json())
-    .then(json => s.add(json ))
-    .then(f => console.log(s))
-  )
-  // .then(function(){
-  //   document.getElementById("target").innerHTML = s.get("education");
-  // })
+    .then(json => s.add(json, {
+      name: "education",
+      primaryKey: "Age_Group"
+    }))
+    .then(fetch("data/gender.json")
+      .then(response => response.json())
+      .then(json => {
+        s.add(json)
+        s.join("EDUCATION", "TABLE0", {name: "joinTable"})
+        s.groupBy("TABLE0", {
+          dim: "Gender",
+          metric: "Count",
+          name: "sortBy"
+        });
+        var content = getTable('EDUCATION', s);
+        document.getElementById("target1").insertAdjacentHTML('beforeend', content);
+        content = getTable('TABLE0', s);
+        document.getElementById("target2").insertAdjacentHTML('beforeend', content);
+        content = getTable('JOINTABLE', s);
+        document.getElementById("target3").insertAdjacentHTML('beforeend', content);
+        content = getTable('SORTBY', s);
+        document.getElementById("target4").insertAdjacentHTML('beforeend', content);
+      })
+    )
 });
+
+function getTable(table, s){
+  var header = ``;
+  s.tables[table].col.forEach((d) => {
+    header += `<div class="rc header">${d}</div>`
+  })
+  header += `<br>`
+  let rows = ``;
+  s.get(table).forEach((d) => {
+    s.tables[table].col.forEach((e, i) => {
+      rows += `<div class="rc">${d[e]}</div>`
+    })
+    rows += `<br>`;
+  })
+  return header + rows;
+}
