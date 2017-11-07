@@ -14,7 +14,8 @@ requirejs(['../dist/jschema'], function(jSchema) {
         s.groupBy("TABLE0", {
           dim: "Gender",
           metric: "Count",
-          name: "sortBy"
+          name: "groupBy",
+          method: "sum"
         });
         var content = getTable('EDUCATION', s);
         document.getElementById("target1").insertAdjacentHTML('beforeend', content);
@@ -22,7 +23,7 @@ requirejs(['../dist/jschema'], function(jSchema) {
         document.getElementById("target2").insertAdjacentHTML('beforeend', content);
         content = getTable('JOINTABLE', s);
         document.getElementById("target3").insertAdjacentHTML('beforeend', content);
-        content = getTable('SORTBY', s);
+        content = getTable('GROUPBY', s);
         document.getElementById("target4").insertAdjacentHTML('beforeend', content);
       })
     )

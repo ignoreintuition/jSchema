@@ -13,7 +13,11 @@ jSchema is going to create an object assigned globally to the window called `win
 
 A complete working demo of how to load tables, join tables, and aggregate tables can be found in the repository in the demo folder.  
 
+
 ## How to Use
+
+### NPM
+If you use npm, `npm install jschema.js`.
 
 ### requirejs
 jschema.js uses requirejs to modularly load the library and is included in the package.json.  require.js can be moved to the lib directory of your project and included as
@@ -72,7 +76,8 @@ To Group by you need to provide the dataset name, the name of the dimension to g
 s.groupBy("GENDER", {
   dim: "Gender",
   metric: "Count",
-  name: "sortBy"
+  name: "groupBy",
+  method: "sum" // supported methods are sum, count
 })
 ```
 Output

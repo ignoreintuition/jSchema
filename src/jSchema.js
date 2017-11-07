@@ -1,10 +1,10 @@
 /*jshint esversion: 6 */
 
-define (function(require) {
+define(function(require) {
   // 'use strict';
 
   function jSchema() {
-    const VERSION = '0.4.1';
+    const VERSION = '0.4.2';
     var data = [],
       counter = 0,
       _schema = {
@@ -131,8 +131,6 @@ define (function(require) {
     // @param {String} d dataset
     // @param {Object} attr dimension to group by and measure to aggregate
     // e.g. {dim: 'height, metric: 'count', name: 'tableName'}
-    // TODO: Add different aggregation methods
-
     _schema.groupBy = function(d, attr) {
       attr = attr || {};
       if (attr.dim === undefined || attr.metric === undefined) {
@@ -141,24 +139,12 @@ define (function(require) {
       } else {
         attr.dim = attr.dim.toUpperCase();
         attr.metric = attr.metric.toUpperCase();
+        attr.method = attr.method || 'SUM';
+        attr.method = attr.method.toUpperCase();
       }
-
-      var dataset = data[this.tables[d].id],
-        uniqueDimensions = _distinct(dataset, attr.dim),
-        groupByData = [];
-      uniqueDimensions.forEach(function(ud) {
-        var filterDataset = dataset.filter(d => d[attr.dim] == ud);
-        var reducedDataset = filterDataset.reduce((a, b) => {
-          return {
-            dim: ud,
-            val: a.val + b[attr.metric]
-          };
-        }, {
-          dim: ud,
-          val: 0
-        });
-        groupByData.push(reducedDataset);
-      });
+      var dataset = data[this.tables[d].id];
+      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method);
+      if (groupByData == 0) return 0;
       this.add(groupByData, {
         name: attr.name || "WORK." + d + "_" + attr.dim + "_" + attr.metric,
         primaryKey: attr.name
@@ -259,6 +245,7 @@ define (function(require) {
     }
   }
 
+  //filters a dataset based on a predicate and value
   function _filterPredicate(data, p, e) {
     var subset = data.filter(function(d) {
       return d[p] == e;
@@ -266,6 +253,7 @@ define (function(require) {
     return subset;
   }
 
+  //converts all columns to uppercase
   function _colToUppercase(d) {
     for (var i = 0; i < d.length; i++) {
       let a = d[i];
@@ -282,11 +270,54 @@ define (function(require) {
     return d;
   }
 
+  // logging function
   function _log(c, t) {
     let log = ["INFO", "WARNING", "ERROR"],
-    logLvl = 0;
+      logLvl = 0;
     if (c > logLvl)
       console.log(log[c] + ": " + t);
+  }
+
+  // method for aggregating datasets
+  function _aggregate(dataset, dim, metric, method) {
+    var uniqueDimensions = _distinct(dataset, dim);
+    var groupByData = [];
+    method = method || 'SUM';
+    if (['SUM', 'COUNT'].indexOf(method) == -1) return 0;
+    uniqueDimensions.forEach(function(uniqueDim) {
+      var filterDataset = dataset.filter(d => d[dim] == uniqueDim);
+      var reducedDataset = null;
+      if (method == 'SUM') reducedDataset = _sum(uniqueDim, metric, filterDataset);
+      else if (method == 'COUNT') reducedDataset = _count(uniqueDim, filterDataset);
+      groupByData.push(reducedDataset);
+    });
+    return groupByData;
+  }
+
+  // method for summing values
+  function _sum(dim, metric, ds) {
+    return ds.reduce((a, b) => {
+      return {
+        dim: dim,
+        val: a.val + b[metric]
+      };
+    }, {
+      dim: dim,
+      val: 0
+    });
+  }
+
+  // method for counting values
+  function _count(dim, ds) {
+    return ds.reduce((a, b) => {
+      return {
+        dim: dim,
+        val: a.val = a.val + 1
+      };
+    }, {
+      dim: dim,
+      val: 0
+    });
   }
 
   return jSchema;
