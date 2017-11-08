@@ -5,10 +5,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 /*jshint esversion: 6 */
 
 define(function (require) {
-  // 'use strict';
+  // "use strict";
 
   function jSchema() {
-    var VERSION = '0.4.2';
+    var VERSION = "0.4.3";
     var data = [],
         counter = 0,
         _schema = {
@@ -113,16 +113,16 @@ define(function (require) {
     // @method orderBy
     // @param {String} d dataset
     // @param {String} attr object containing the attribute to sort by & orderBy
-    // e.g. {clause: 'height, order: 'des', name: 'tableName'}
+    // e.g. {clause: "height, order: "des", name: "tableName"}
     _schema.orderBy = function (d, attr) {
       attr = attr || {};
       if (attr.clause === undefined) return 0;else attr.clause = attr.clause.toUpperCase();
 
       d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
-      attr.order = attr.order !== undefined && attr.order.toUpperCase() == 'ASC' ? 'ASC' : 'DESC';
+      attr.order = attr.order !== undefined && attr.order.toUpperCase() == "ASC" ? "ASC" : "DESC";
       var orderByData = data[this.tables[d].id].sort(function (d1, d2) {
-        return attr.order == 'ASC' ? d1[attr.clause] - d2[attr.clause] : d2[attr.clause] - d1[attr.clause];
+        return attr.order == "ASC" ? d1[attr.clause] - d2[attr.clause] : d2[attr.clause] - d1[attr.clause];
       });
       this.add(orderByData, {
         name: attr.name || "WORK." + d + "_" + attr.clause + "_" + attr.order,
@@ -136,7 +136,7 @@ define(function (require) {
     // @method groupBy
     // @param {String} d dataset
     // @param {Object} attr dimension to group by and measure to aggregate
-    // e.g. {dim: 'height, metric: 'count', name: 'tableName'}
+    // e.g. {dim: "height, metric: "count", name: "tableName"}
     _schema.groupBy = function (d, attr) {
       attr = attr || {};
       if (attr.dim === undefined || attr.metric === undefined) {
@@ -145,7 +145,7 @@ define(function (require) {
       } else {
         attr.dim = attr.dim.toUpperCase();
         attr.metric = attr.metric.toUpperCase();
-        attr.method = attr.method || 'SUM';
+        attr.method = attr.method || "SUM";
         attr.method = attr.method.toUpperCase();
       }
       var dataset = data[this.tables[d].id];
@@ -205,7 +205,7 @@ define(function (require) {
     // @method cleanUp
     _schema.cleanUp = function () {
       for (var key in this.tables) {
-        if (key.indexOf('WORK.') > -1) {
+        if (key.indexOf("WORK.") > -1) {
           this.drop(key);
         }
       }
@@ -284,17 +284,19 @@ define(function (require) {
   }
 
   // method for aggregating datasets
+  // TODO normalize function calls
   function _aggregate(dataset, dim, metric, method) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
-    method = method || 'SUM';
-    if (['SUM', 'COUNT'].indexOf(method) == -1) return 0;
+    method = method || "SUM";
+    if (["SUM", "COUNT"].indexOf(method) == -1) return 0;
     uniqueDimensions.forEach(function (uniqueDim) {
       var filterDataset = dataset.filter(function (d) {
         return d[dim] == uniqueDim;
       });
       var reducedDataset = null;
-      if (method == 'SUM') reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == 'COUNT') reducedDataset = _count(uniqueDim, filterDataset);
+
+      if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);
       groupByData.push(reducedDataset);
     });
     return groupByData;
@@ -307,10 +309,7 @@ define(function (require) {
         dim: dim,
         val: a.val + b[metric]
       };
-    }, {
-      dim: dim,
-      val: 0
-    });
+    }, { val: 0 });
   }
 
   // method for counting values
@@ -318,12 +317,9 @@ define(function (require) {
     return ds.reduce(function (a, b) {
       return {
         dim: dim,
-        val: a.val = a.val + 1
+        val: a.val + 1
       };
-    }, {
-      dim: dim,
-      val: 0
-    });
+    }, { val: 0 });
   }
 
   return jSchema;

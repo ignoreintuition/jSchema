@@ -1,4 +1,4 @@
-requirejs(['../dist/jschema'], function(jSchema) {
+requirejs(["../dist/jschema"], function(jSchema) {
   var s = new jSchema;
   fetch("data/education.json")
     .then(response => response.json())
@@ -17,14 +17,14 @@ requirejs(['../dist/jschema'], function(jSchema) {
           name: "groupBy",
           method: "sum"
         });
-        var content = getTable('EDUCATION', s);
-        document.getElementById("target1").insertAdjacentHTML('beforeend', content);
-        content = getTable('TABLE0', s);
-        document.getElementById("target2").insertAdjacentHTML('beforeend', content);
-        content = getTable('JOINTABLE', s);
-        document.getElementById("target3").insertAdjacentHTML('beforeend', content);
-        content = getTable('GROUPBY', s);
-        document.getElementById("target4").insertAdjacentHTML('beforeend', content);
+        var content = getTable("EDUCATION", s);
+        document.getElementById("target1").insertAdjacentHTML("beforeend", content);
+        content = getTable("TABLE0", s);
+        document.getElementById("target2").insertAdjacentHTML("beforeend", content);
+        content = getTable("JOINTABLE", s);
+        document.getElementById("target3").insertAdjacentHTML("beforeend", content);
+        content = getTable("GROUPBY", s);
+        document.getElementById("target4").insertAdjacentHTML("beforeend", content);
       })
     )
 });
