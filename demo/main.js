@@ -15,7 +15,7 @@ requirejs(["../dist/jschema"], function(jSchema) {
           dim: "Gender",
           metric: "Count",
           name: "groupBy",
-          method: "sum"
+          method: "average"
         });
         var content = getTable("EDUCATION", s);
         document.getElementById("target1").insertAdjacentHTML("beforeend", content);

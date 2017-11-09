@@ -77,7 +77,7 @@ s.groupBy("GENDER", {
   dim: "Gender",
   metric: "Count",
   name: "groupBy",
-  method: "sum" // supported methods are sum, count
+  method: "sum" // supported methods are sum, count, average
 })
 ```
 Output
@@ -112,7 +112,7 @@ s.cleanUp();
 ```
 
 # Testing
-To run mocha test scripts from the terminal type npm test.
+To run mocha test scripts from the terminal type `npm run test`.
 
 # Contact
 Questions, comments, feature requests, etc are always welcome.  I am [@ignoreintuition](https://twitter.com/IgnoreIntuition) on Twitter.

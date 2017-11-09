@@ -8,7 +8,7 @@ define(function (require) {
   // "use strict";
 
   function jSchema() {
-    var VERSION = "0.4.3";
+    var VERSION = "0.4.4";
     var data = [],
         counter = 0,
         _schema = {
@@ -289,14 +289,13 @@ define(function (require) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
     method = method || "SUM";
-    if (["SUM", "COUNT"].indexOf(method) == -1) return 0;
+    if (["SUM", "COUNT", "AVERAGE"].indexOf(method) == -1) return 0;
     uniqueDimensions.forEach(function (uniqueDim) {
       var filterDataset = dataset.filter(function (d) {
         return d[dim] == uniqueDim;
       });
       var reducedDataset = null;
-
-      if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);
+      if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);
       groupByData.push(reducedDataset);
     });
     return groupByData;
@@ -320,6 +319,21 @@ define(function (require) {
         val: a.val + 1
       };
     }, { val: 0 });
+  }
+
+  // method for averages
+  function _average(dim, metric, ds) {
+    var reducedDS = ds.reduce(function (a, b) {
+      return {
+        dim: dim,
+        sum: a.sum + b[metric],
+        count: a.count + 1
+      };
+    }, { sum: 0, count: 0 });
+    reducedDS.val = reducedDS.sum / reducedDS.count;
+    delete reducedDS.sum;
+    delete reducedDS.count;
+    return reducedDS;
   }
 
   return jSchema;
