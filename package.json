@@ -9,7 +9,7 @@
     "prebuild": "npm run clean && npm run init",
     "jshint": "./node_modules/.bin/jshint ./src/jschema.js",
     "babel": "./node_modules/.bin/babel src -d dist --presets es2015 ",
-    "minify": "./node_modules/.bin/uglifyjs ./dist/jschema.js -o ./dist/jschema.min.js",
+    "minify": "./node_modules/.bin/uglifyjs ./dist/jschema.js -o ./dist/jschema.min.js && ./node_modules/.bin/uglifyjs ./src/jschema.js -o ./dist/jschema-es6.min.js",
     "build": "npm run -s jshint && npm run -s babel && npm run -s minify",
     "test": "./node_modules/.bin/mocha"
   },
@@ -30,6 +30,8 @@
     "jshint": "^2.9.5",
     "mocha": "^4.0.1",
     "requirejs": "^2.3.5",
+    "uglify-es": "^3.1.8",
     "uglify-js": "^3.1.5"
-  }
+  },
+  "dependencies": {}
 }
