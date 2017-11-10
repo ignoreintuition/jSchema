@@ -25,6 +25,7 @@ requirejs(["../dist/jschema"], function(jSchema) {
         document.getElementById("target3").insertAdjacentHTML("beforeend", content);
         content = getTable("GROUPBY", s);
         document.getElementById("target4").insertAdjacentHTML("beforeend", content);
+        console.log(s);
       })
     )
 });

@@ -4,7 +4,7 @@ define(function(require) {
   // "use strict";
 
   function jSchema() {
-    const VERSION = "0.4.4";
+    const VERSION = "0.4.5";
     var data = [],
       counter = 0,
       _schema = {
@@ -33,8 +33,10 @@ define(function(require) {
       this.tables[name].pk = (metadata && metadata.primaryKey) ? metadata.primaryKey.toUpperCase() : null;
       this.tables[name].rows = d.length;
       this.tables[name].col = Object.keys(d[0]);
+      this.tables[name].metadata = {};
       this.tables[name].col.forEach((c, i) => {
         this.tables[name].col[i] = c;
+        this.tables[name].metadata[c] = { "dataType": typeof d[0][c] } ;
       });
       data.push(d);
       this.length = data.length;

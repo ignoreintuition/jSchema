@@ -38,8 +38,10 @@ define(function (require) {
       this.tables[name].pk = metadata && metadata.primaryKey ? metadata.primaryKey.toUpperCase() : null;
       this.tables[name].rows = d.length;
       this.tables[name].col = Object.keys(d[0]);
+      this.tables[name].metadata = {};
       this.tables[name].col.forEach(function (c, i) {
         _this.tables[name].col[i] = c;
+        _this.tables[name].metadata[c] = { "dataType": _typeof(d[0][c]) };
       });
       data.push(d);
       this.length = data.length;
