@@ -1,4 +1,4 @@
-requirejs(["../dist/jschema"], function(jSchema) {
+requirejs(["../../dist/jschema"], function(jSchema) {
   var s = new jSchema;
   fetch("data/education.json")
     .then(response => response.json())

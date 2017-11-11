@@ -4,7 +4,7 @@ define(function(require) {
   // "use strict";
 
   function jSchema() {
-    const VERSION = "0.4.5";
+    const VERSION = "0.4.6";
     var data = [],
       counter = 0,
       _schema = {
@@ -293,6 +293,7 @@ define(function(require) {
       if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);
       else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);
       else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);
+      reducedDataset.val = Math.round(reducedDataset.val*100)/100;
       groupByData.push(reducedDataset);
     });
     return groupByData;

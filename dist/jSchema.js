@@ -298,6 +298,7 @@ define(function (require) {
       });
       var reducedDataset = null;
       if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);
+      reducedDataset.val = Math.round(reducedDataset.val * 100) / 100;
       groupByData.push(reducedDataset);
     });
     return groupByData;
