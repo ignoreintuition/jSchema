@@ -120,7 +120,7 @@ s.insert("TABLE0", {
   "count": 10
 });
 ```
-
+### CLEANUP
 By default all temporary datasets (joins, group by, order by) added to the schema will be prefixed with the namespace WORK. (e.g. joining two tables NAMES and LOCATIONS will result in a table added to the schema called WORK.NAMES_LOCATIONS).  Calling the cleanUp method will remove all datasets added to the work namespace
 
 ```Javascript
