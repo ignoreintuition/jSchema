@@ -4,7 +4,7 @@ define(function(require) {
   // "use strict";
 
   function jSchema() {
-    const VERSION = "0.4.6";
+    const VERSION = "0.5.0";
     var data = [],
       counter = 0,
       _schema = {
@@ -184,6 +184,7 @@ define(function(require) {
     // @method update
     // @param {String} d dataset
     // @param {Object} data new dataset to replace d
+    // TODO add in check for type, columns
     _schema.update = function(d, data) {
       d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
@@ -195,6 +196,17 @@ define(function(require) {
       });
       return this;
     };
+
+    _schema.insert = function(d, rows) {
+      d = d.toUpperCase();
+      if (_checkForTable(d, this.tables) === false) return;
+      if (!Array.isArray(rows)) rows = [].push(rows);
+      rows = _colToUppercase(rows);
+      rows.forEach(r=>{
+        data[this.tables[d].id].push(r);
+      });
+    };
+
 
     // clean up everything that is in the work namespace
     // @namespace jSchema

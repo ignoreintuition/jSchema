@@ -47,19 +47,21 @@ fetch("education.json")
     .then(json => s.add(json, {name:"gender", primaryKey:"Age_Group"}))
 );
 ```
-
+### JOIN
 Multiple datasets that have primary / foreign key relationships can be joined as such:
 
 ```Javascript
 s.join("EDUCATION", "GENDER", {name: "joinTable"})
 ```
 
+### DROP
 You can drop tables that are no longer needed in the schema with the drop method
 
 ```Javascript
 s.drop("GENDER")
 ```
 
+### SORT
 If you want to sort a dataset by an attribute use the orderBy method:
 
 ```Javascript
@@ -70,6 +72,7 @@ s.orderBy("GENDER", {
 })
 ```
 
+### GROUP BY
 To Group by you need to provide the dataset name, the name of the dimension to group by, and the metrics you wish to aggregate:
 
 ```Javascript
@@ -93,16 +96,29 @@ Output
 ]
 ```
 
+### FILTER
 To filter a dataset you can call the filter method and pass three of more arguments.  First argument is always the table name.  The second and third are the field to filter by and the value to filter it on.  Additional pairs can be included as 4th, 5th parameters and so on.  A filtered dataset will be created in the WORK space.
 
 ```Javascript
 s.filter('GENDER', 'Gender', 'Female')
 ```
 
+### UPDATE
 If a new version of the dataset is made available you can update the existing table in the schema by running the update method
 
 ```Javascript
 s.update("GENDER", data);
+```
+
+### INSERT
+Inserting data into a table will add additional rows to your table.  This will not effect any of the existing data in the table.  A single row can be passed as an object or an array of objects can be passed.  Column names need to match in order for the new data to appear when retrieved.
+
+```JavaScript
+s.insert("TABLE0", {
+  "gender": "Female",
+  "age_group": "16-24",
+  "count": 10
+});
 ```
 
 By default all temporary datasets (joins, group by, order by) added to the schema will be prefixed with the namespace WORK. (e.g. joining two tables NAMES and LOCATIONS will result in a table added to the schema called WORK.NAMES_LOCATIONS).  Calling the cleanUp method will remove all datasets added to the work namespace

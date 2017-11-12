@@ -10,12 +10,19 @@ requirejs(["../../dist/jschema"], function(jSchema) {
       .then(response => response.json())
       .then(json => {
         s.add(json)
-        s.join("EDUCATION", "TABLE0", {name: "joinTable"})
+        s.join("EDUCATION", "TABLE0", {
+          name: "joinTable"
+        })
         s.groupBy("TABLE0", {
           dim: "Gender",
           metric: "Count",
           name: "groupBy",
           method: "average"
+        });
+        s.insert("TABLE0", {
+          "gender": "Female",
+          "age_group": "16-24",
+          "count": 10
         });
         var content = getTable("EDUCATION", s);
         document.getElementById("target1").insertAdjacentHTML("beforeend", content);
@@ -30,7 +37,7 @@ requirejs(["../../dist/jschema"], function(jSchema) {
     )
 });
 
-function getTable(table, s){
+function getTable(table, s) {
   var header = ``;
   s.tables[table].col.forEach((d) => {
     header += `<div class="rc header">${d}</div>`

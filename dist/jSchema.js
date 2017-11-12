@@ -8,7 +8,7 @@ define(function (require) {
   // "use strict";
 
   function jSchema() {
-    var VERSION = "0.4.5";
+    var VERSION = "0.4.6";
     var data = [],
         counter = 0,
         _schema = {
@@ -200,6 +200,26 @@ define(function (require) {
         "primaryKey": pk
       });
       return this;
+    };
+
+    _schema.insert = function (d, rows) {
+      var _this3 = this;
+
+      d = d.toUpperCase();
+      if (_checkForTable(d, this.tables) === false) return;
+      if (!Array.isArray(rows)) rows = [].push(rows);
+      rows = _colToUppercase(rows);
+
+      // check columns
+
+      // check data types
+
+      // insert columns
+      rows.forEach(function (r) {
+        data[_this3.tables[d].id].push(r);
+      });
+      console.log(data[this.tables[d].id]);
+      console.log(rows);
     };
 
     // clean up everything that is in the work namespace
