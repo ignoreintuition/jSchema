@@ -117,7 +117,7 @@ If a new version of the dataset is made available you can update the existing ta
 s.update("GENDER", data);
 ```
 
-### INSERTf
+### INSERT
 Inserting data into a table will add additional rows to your table.  This will not effect any of the existing data in the table.  A single row can be passed as an object or an array of objects can be passed.  Column names need to match in order for the new data to appear when retrieved.
 
 ```JavaScript
