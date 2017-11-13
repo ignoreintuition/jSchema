@@ -7,13 +7,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 define(function (require) {
   // "use strict";
 
-  function jSchema() {
-    var VERSION = "0.4.6";
+  function jSchema(attr) {
+    attr = attr || {};
+    var VERSION = "0.5.1";
     var data = [],
         counter = 0,
         _schema = {
       tables: {},
-      length: 0
+      length: 0,
+      caseSensitive: attr.caseSensitive === undefined ? true : attr.caseSensitive
     };
 
     // Add a new table to your schema
@@ -31,11 +33,12 @@ define(function (require) {
       }
       var name = metadata && metadata.name ? metadata.name.toUpperCase() : "TABLE" + counter++;
       if (_checkUnique(name, this.tables) === false) return 0;
-      d = _colToUppercase(d);
+      if (this.caseSensitive) d = _colToUppercase(d);
 
       this.tables[name] = {};
       this.tables[name].id = data.length;
-      this.tables[name].pk = metadata && metadata.primaryKey ? metadata.primaryKey.toUpperCase() : null;
+      this.tables[name].pk = metadata && metadata.primaryKey ? metadata.primaryKey : null;
+      if (this.caseSensitive && this.tables[name].pk) this.tables[name].pk = this.tables[name].pk.toUpperCase();
       this.tables[name].rows = d.length;
       this.tables[name].col = Object.keys(d[0]);
       this.tables[name].metadata = {};
@@ -53,7 +56,7 @@ define(function (require) {
     // @method get
     // @param {String} d - dataset name
     _schema.get = function (d) {
-      d = d.toUpperCase();
+      if (this.caseSensitive) d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
       return data[this.tables[d].id];
     };
@@ -67,8 +70,10 @@ define(function (require) {
       var _this2 = this;
 
       attr = attr || {};
-      d1 = d1.toUpperCase();
-      d2 = d2.toUpperCase();
+      if (this.caseSensitive) {
+        d1 = d1.toUpperCase();
+        d2 = d2.toUpperCase();
+      }
       var target = [];
       if (_checkForTable(d1, this.tables) === false) return;
       if (_checkForTable(d2, this.tables) === false) return;
@@ -97,7 +102,7 @@ define(function (require) {
     // @method drop
     // @param {String} d dataset
     _schema.drop = function (d) {
-      d = d.toUpperCase();
+      if (this.caseSensitive) d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
       data.splice(this.tables[d].id, 1);
       for (var key in this.tables) {
@@ -118,9 +123,11 @@ define(function (require) {
     // e.g. {clause: "height, order: "des", name: "tableName"}
     _schema.orderBy = function (d, attr) {
       attr = attr || {};
-      if (attr.clause === undefined) return 0;else attr.clause = attr.clause.toUpperCase();
-
-      d = d.toUpperCase();
+      if (attr.clause === undefined) return 0;
+      if (this.caseSensitive) {
+        attr.clause = attr.clause.toUpperCase();
+        d = d.toUpperCase();
+      }
       if (_checkForTable(d, this.tables) === false) return;
       attr.order = attr.order !== undefined && attr.order.toUpperCase() == "ASC" ? "ASC" : "DESC";
       var orderByData = data[this.tables[d].id].sort(function (d1, d2) {
@@ -145,13 +152,15 @@ define(function (require) {
         _log(1, "Must include a dimension and metrics to group by");
         return 0;
       } else {
-        attr.dim = attr.dim.toUpperCase();
-        attr.metric = attr.metric.toUpperCase();
         attr.method = attr.method || "SUM";
-        attr.method = attr.method.toUpperCase();
+        if (this.caseSensitive) {
+          attr.dim = attr.dim.toUpperCase();
+          attr.metric = attr.metric.toUpperCase();
+          attr.method = attr.method.toUpperCase();
+        }
       }
       var dataset = data[this.tables[d].id];
-      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method);
+      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method, attr.percision);
       if (groupByData == 0) return 0;
       this.add(groupByData, {
         name: attr.name || "WORK." + d + "_" + attr.dim + "_" + attr.metric,
@@ -168,15 +177,16 @@ define(function (require) {
     // @param {String} expression
     // multiple pairs of predicates and expressions can be strung together
     _schema.filter = function (d, clauses) {
-      d = d.toUpperCase();
+      if (this.caseSensitive) d = d.toUpperCase();
       if (arguments.length < 3 || arguments.length % 2 === 0) {
         _log(1, "Please include table, predicate, and expression");
         return 0;
       }
       var subsetData = data[this.tables[d].id];
       for (var i = 1; i < arguments.length; i += 2) {
-        var predicate = arguments[i].toUpperCase(),
+        var predicate = arguments[i],
             expression = arguments[i + 1];
+        if (this.caseSensitive) predicate = predicate.toUpperCase();
         subsetData = _filterPredicate(subsetData, predicate, expression);
       }
       this.add(subsetData, {
@@ -190,8 +200,9 @@ define(function (require) {
     // @method update
     // @param {String} d dataset
     // @param {Object} data new dataset to replace d
+    // TODO add in check for type, columns
     _schema.update = function (d, data) {
-      d = d.toUpperCase();
+      if (this.caseSensitive) d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
       var pk = this.tables[d].pk;
       this.drop(d);
@@ -205,21 +216,14 @@ define(function (require) {
     _schema.insert = function (d, rows) {
       var _this3 = this;
 
-      d = d.toUpperCase();
+      if (this.caseSensitive) d = d.toUpperCase();
       if (_checkForTable(d, this.tables) === false) return;
-      if (!Array.isArray(rows)) rows = [].push(rows);
-      rows = _colToUppercase(rows);
-
-      // check columns
-
-      // check data types
-
-      // insert columns
+      if (!Array.isArray(rows)) rows = new Array(rows);
+      if (this.caseSensitive) rows = _colToUppercase(rows);
       rows.forEach(function (r) {
         data[_this3.tables[d].id].push(r);
       });
-      console.log(data[this.tables[d].id]);
-      console.log(rows);
+      return this;
     };
 
     // clean up everything that is in the work namespace
@@ -307,7 +311,7 @@ define(function (require) {
 
   // method for aggregating datasets
   // TODO normalize function calls
-  function _aggregate(dataset, dim, metric, method) {
+  function _aggregate(dataset, dim, metric, method, percision) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
     method = method || "SUM";
@@ -318,7 +322,7 @@ define(function (require) {
       });
       var reducedDataset = null;
       if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);
-      reducedDataset.val = Math.round(reducedDataset.val * 100) / 100;
+      reducedDataset.val = reducedDataset.val.toFixed(percision || 2);
       groupByData.push(reducedDataset);
     });
     return groupByData;

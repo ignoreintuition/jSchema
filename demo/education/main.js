@@ -1,5 +1,5 @@
 requirejs(["../../dist/jschema"], function(jSchema) {
-  var s = new jSchema;
+  var s = new jSchema();
   fetch("data/education.json")
     .then(response => response.json())
     .then(json => s.add(json, {
@@ -17,8 +17,9 @@ requirejs(["../../dist/jschema"], function(jSchema) {
           dim: "Gender",
           metric: "Count",
           name: "groupBy",
-          method: "average"
-        });
+          method: "average",
+          percision: 1
+        })
         s.insert("TABLE0", {
           "gender": "Female",
           "age_group": "16-24",

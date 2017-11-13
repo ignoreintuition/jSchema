@@ -7,7 +7,13 @@ jSchema is a framework for modeling data in JavaScript.  By using fundamental da
 
 ![entity relationship diagram - new page 1](https://user-images.githubusercontent.com/5210420/32084304-50e6bdbc-ba96-11e7-92b8-cfab13866fe0.png)
 
-jSchema is going to create an object assigned globally to the window called `window.jSchema`.  This object is a metadata representation of all your datasets containing the table names, column names, and keys that define sets.  The data itself is stored within a closure within the object and is retrieved via a getter function.  Joining data, aggregating data, and filtering data will create a new dataset in your WORK namespace that will persist on the page until either you delete the table or you run a cleanUp method.
+jSchema is going to create an object called `jSchema`.  This object is a metadata representation of all your datasets containing the table names, column names, and keys that define sets.  The data itself is stored within a closure within the object and is retrieved via a getter function.  Joining data, aggregating data, and filtering data will create a new dataset in your WORK namespace that will persist on the page until either you delete the table or you run a cleanUp method.  By default jSchema will be case insensitive.  This can be overwritten with:
+
+```JavaScript
+var s = new jSchema({
+  "caseSensitive": false
+});
+```
 
 ## Demo
 
@@ -80,7 +86,8 @@ s.groupBy("GENDER", {
   dim: "Gender",
   metric: "Count",
   name: "groupBy",
-  method: "sum" // supported methods are sum, count, average
+  method: "sum", // supported methods are sum, count, average
+  percision: 2 // default is 2
 })
 ```
 Output
@@ -110,7 +117,7 @@ If a new version of the dataset is made available you can update the existing ta
 s.update("GENDER", data);
 ```
 
-### INSERT
+### INSERTf
 Inserting data into a table will add additional rows to your table.  This will not effect any of the existing data in the table.  A single row can be passed as an object or an array of objects can be passed.  Column names need to match in order for the new data to appear when retrieved.
 
 ```JavaScript
