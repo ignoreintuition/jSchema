@@ -5,7 +5,7 @@ define(function(require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    const VERSION = "0.5.1";
+    const VERSION = "0.5.2";
     var data = [],
       counter = 0,
       _schema = {
@@ -308,13 +308,15 @@ define(function(require) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
     method = method || "SUM";
-    if (["SUM", "COUNT", "AVERAGE"].indexOf(method) == -1) return 0;
+    if (["SUM", "COUNT", "AVERAGE", "MIN", "MAX"].indexOf(method) == -1) return 0;
     uniqueDimensions.forEach(function(uniqueDim) {
       var filterDataset = dataset.filter(d => d[dim] == uniqueDim);
       var reducedDataset = null;
       if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);
       else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);
       else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);
+      else if (method == "MIN") reducedDataset = _min(uniqueDim, metric, filterDataset);
+      else if (method == "MAX") reducedDataset = _max(uniqueDim, metric, filterDataset);
       reducedDataset.val = reducedDataset.val.toFixed(percision || 2);
       groupByData.push(reducedDataset);
     });
@@ -354,6 +356,24 @@ define(function(require) {
     delete reducedDS.sum;
     delete reducedDS.count;
     return reducedDS;
+  }
+
+  function _max(dim, metric, ds) {
+    return ds.reduce((a, b) => {
+      return {
+        dim: dim,
+        val: a.val > b[metric] ? a.val : b[metric]
+      };
+    }, { val: 0 } );
+  }
+
+  function _min(dim, metric, ds) {
+    return ds.reduce((a, b) => {
+      return {
+        dim: dim,
+        val: (a.val === 0 || a.val < b[metric]) ? a.val : b[metric]
+      };
+    }, { val: 0 } );
   }
 
   return jSchema;

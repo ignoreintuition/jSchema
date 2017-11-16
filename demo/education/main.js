@@ -19,21 +19,21 @@ requirejs(["../../dist/jschema"], function(jSchema) {
           dim: "Gender",
           metric: "Count",
           name: "groupBy",
-          method: "average",
+          method: "max",
           percision: 1
         })
-        s.insert("TABLE0", {
+        s.insert("TABLE0", [{
           "gender": "Female",
           "age_group": "16-24",
           "count": 10
-        });
+        }]);
         var content = getTable("EDUCATION", s);
         document.getElementById("target1").insertAdjacentHTML("beforeend", content);
         content = getTable("TABLE0", s);
         document.getElementById("target2").insertAdjacentHTML("beforeend", content);
         content = getTable("JOINTABLE", s);
         document.getElementById("target3").insertAdjacentHTML("beforeend", content);
-        content = getTable("GROUPBY", s);
+        content = getTable("TABLE0", s);
         document.getElementById("target4").insertAdjacentHTML("beforeend", content);
         console.log(s);
       })

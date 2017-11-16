@@ -11,7 +11,7 @@ requirejs(["../../dist/jschema.min"], function(jSchema) {
         dim: "SPECIES",
         metric: "PETALWIDTHCM",
         name: "SPECIES",
-        method: "AVERAGE"
+        method: "MAX"
       })
       var content = getTable("SPECIES", s);
       document.getElementById("target1").insertAdjacentHTML("beforeend", content);
