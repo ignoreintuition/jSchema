@@ -5,7 +5,7 @@ define(function(require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    const VERSION = "0.5.2";
+    const VERSION = "0.5.3";
     var data = [],
       counter = 0,
       _schema = {
@@ -39,7 +39,9 @@ define(function(require) {
       this.tables[name].metadata = {};
       this.tables[name].col.forEach((c, i) => {
         this.tables[name].col[i] = c;
-        this.tables[name].metadata[c] = { "dataType": typeof d[0][c] } ;
+        this.tables[name].metadata[c] = {
+          "dataType": typeof d[0][c]
+        };
       });
       data.push(d);
       this.length = data.length;
@@ -170,7 +172,7 @@ define(function(require) {
     // @param {String} expression
     // multiple pairs of predicates and expressions can be strung together
     _schema.filter = function(d, clauses) {
-      if (this.caseSensitive)  d = d.toUpperCase();
+      if (this.caseSensitive) d = d.toUpperCase();
       if (arguments.length < 3 || arguments.length % 2 === 0) {
         _log(1, "Please include table, predicate, and expression");
         return 0;
@@ -211,7 +213,7 @@ define(function(require) {
       if (_checkForTable(d, this.tables) === false) return;
       if (!Array.isArray(rows)) rows = new Array(rows);
       if (this.caseSensitive) rows = _colToUppercase(rows);
-      rows.forEach(r=>{
+      rows.forEach(r => {
         data[this.tables[d].id].push(r);
       });
       return this;
@@ -311,70 +313,77 @@ define(function(require) {
     if (["SUM", "COUNT", "AVERAGE", "MIN", "MAX"].indexOf(method) == -1) return 0;
     uniqueDimensions.forEach(function(uniqueDim) {
       var filterDataset = dataset.filter(d => d[dim] == uniqueDim);
-      var reducedDataset = null;
-      if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);
-      else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);
-      else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);
-      else if (method == "MIN") reducedDataset = _min(uniqueDim, metric, filterDataset);
-      else if (method == "MAX") reducedDataset = _max(uniqueDim, metric, filterDataset);
+      var reducedDataset = aggregateHelpers[method.toLowerCase()](uniqueDim, filterDataset, metric);
       reducedDataset.val = reducedDataset.val.toFixed(percision || 2);
       groupByData.push(reducedDataset);
     });
     return groupByData;
   }
 
-  // method for summing values
-  function _sum(dim, metric, ds) {
-    return ds.reduce((a, b) => {
-      return {
-        dim: dim,
-        val: a.val + b[metric]
-      };
-    }, { val: 0 });
-  }
+  var aggregateHelpers = {
+    // method for summing values
+    sum: function(dim, ds, metric) {
+      return ds.reduce((a, b) => {
+        return {
+          dim: dim,
+          val: a.val + b[metric]
+        };
+      }, {
+        val: 0
+      });
+    },
+    // method for counting values
+    count: function(dim, ds) {
+      return ds.reduce((a, b) => {
+        return {
+          dim: dim,
+          val: a.val + 1
+        };
+      }, {
+        val: 0
+      });
+    },
+    // method for averages
+    average: function(dim, ds, metric) {
+      var reducedDS = ds.reduce((a, b) => {
+        return {
+          dim: dim,
+          sum: a.sum + b[metric],
+          count: a.count + 1
+        };
+      }, {
+        sum: 0,
+        count: 0
+      });
+      reducedDS.val = reducedDS.sum / reducedDS.count;
+      delete reducedDS.sum;
+      delete reducedDS.count;
+      return reducedDS;
+    },
 
-  // method for counting values
-  function _count(dim, ds) {
-    return ds.reduce((a, b) => {
-      return {
-        dim: dim,
-        val: a.val + 1
-      };
-    }, { val: 0 } );
-  }
+    // method for maximum values
+    max: function(dim, ds, metric) {
+      return ds.reduce((a, b) => {
+        return {
+          dim: dim,
+          val: a.val > b[metric] ? a.val : b[metric]
+        };
+      }, {
+        val: 0
+      });
+    },
 
-  // method for averages
-  function _average(dim, metric, ds) {
-    var reducedDS = ds.reduce((a, b) => {
-      return {
-        dim: dim,
-        sum: a.sum + b[metric],
-        count: a.count + 1
-      };
-    }, { sum: 0, count: 0 });
-    reducedDS.val = reducedDS.sum / reducedDS.count;
-    delete reducedDS.sum;
-    delete reducedDS.count;
-    return reducedDS;
-  }
-
-  function _max(dim, metric, ds) {
-    return ds.reduce((a, b) => {
-      return {
-        dim: dim,
-        val: a.val > b[metric] ? a.val : b[metric]
-      };
-    }, { val: 0 } );
-  }
-
-  function _min(dim, metric, ds) {
-    return ds.reduce((a, b) => {
-      return {
-        dim: dim,
-        val: (a.val === 0 || a.val < b[metric]) ? a.val : b[metric]
-      };
-    }, { val: 0 } );
-  }
-
+    // method for minimum values
+    min: function(dim, ds, metric) {
+      return ds.reduce((a, b) => {
+        return {
+          dim: dim,
+          val: (a.val === 0 || a.val < b[metric]) ? a.val : b[metric]
+        };
+      }, {
+        val: 0
+      });
+    }
+  };
   return jSchema;
 });

@@ -1,6 +1,6 @@
 requirejs(["../../dist/jschema"], function(jSchema) {
   var s = new jSchema({
-    "caseSensitive": false
+    "caseSensitive": true
   });
   fetch("data/education.json")
     .then(response => response.json())
