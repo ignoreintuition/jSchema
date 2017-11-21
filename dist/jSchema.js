@@ -9,7 +9,7 @@ define(function (require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    var VERSION = "0.5.2";
+    var VERSION = "0.5.3";
     var data = [],
         counter = 0,
         _schema = {
@@ -44,7 +44,9 @@ define(function (require) {
       this.tables[name].metadata = {};
       this.tables[name].col.forEach(function (c, i) {
         _this.tables[name].col[i] = c;
-        _this.tables[name].metadata[c] = { "dataType": _typeof(d[0][c]) };
+        _this.tables[name].metadata[c] = {
+          "dataType": _typeof(d[0][c])
+        };
       });
       data.push(d);
       this.length = data.length;
@@ -320,66 +322,77 @@ define(function (require) {
       var filterDataset = dataset.filter(function (d) {
         return d[dim] == uniqueDim;
       });
-      var reducedDataset = null;
-      if (method == "SUM") reducedDataset = _sum(uniqueDim, metric, filterDataset);else if (method == "COUNT") reducedDataset = _count(uniqueDim, filterDataset);else if (method == "AVERAGE") reducedDataset = _average(uniqueDim, metric, filterDataset);else if (method == "MIN") reducedDataset = _min(uniqueDim, metric, filterDataset);else if (method == "MAX") reducedDataset = _max(uniqueDim, metric, filterDataset);
+      var reducedDataset = aggregateHelpers[method.toLowerCase()](uniqueDim, filterDataset, metric);
       reducedDataset.val = reducedDataset.val.toFixed(percision || 2);
       groupByData.push(reducedDataset);
     });
     return groupByData;
   }
 
-  // method for summing values
-  function _sum(dim, metric, ds) {
-    return ds.reduce(function (a, b) {
-      return {
-        dim: dim,
-        val: a.val + b[metric]
-      };
-    }, { val: 0 });
-  }
+  var aggregateHelpers = {
+    // method for summing values
+    sum: function sum(dim, ds, metric) {
+      return ds.reduce(function (a, b) {
+        return {
+          dim: dim,
+          val: a.val + b[metric]
+        };
+      }, {
+        val: 0
+      });
+    },
+    // method for counting values
+    count: function count(dim, ds) {
+      return ds.reduce(function (a, b) {
+        return {
+          dim: dim,
+          val: a.val + 1
+        };
+      }, {
+        val: 0
+      });
+    },
+    // method for averages
+    average: function average(dim, ds, metric) {
+      var reducedDS = ds.reduce(function (a, b) {
+        return {
+          dim: dim,
+          sum: a.sum + b[metric],
+          count: a.count + 1
+        };
+      }, {
+        sum: 0,
+        count: 0
+      });
+      reducedDS.val = reducedDS.sum / reducedDS.count;
+      delete reducedDS.sum;
+      delete reducedDS.count;
+      return reducedDS;
+    },
 
-  // method for counting values
-  function _count(dim, ds) {
-    return ds.reduce(function (a, b) {
-      return {
-        dim: dim,
-        val: a.val + 1
-      };
-    }, { val: 0 });
-  }
+    // method for maximum values
+    max: function max(dim, ds, metric) {
+      return ds.reduce(function (a, b) {
+        return {
+          dim: dim,
+          val: a.val > b[metric] ? a.val : b[metric]
+        };
+      }, {
+        val: 0
+      });
+    },
 
-  // method for averages
-  function _average(dim, metric, ds) {
-    var reducedDS = ds.reduce(function (a, b) {
-      return {
-        dim: dim,
-        sum: a.sum + b[metric],
-        count: a.count + 1
-      };
-    }, { sum: 0, count: 0 });
-    reducedDS.val = reducedDS.sum / reducedDS.count;
-    delete reducedDS.sum;
-    delete reducedDS.count;
-    return reducedDS;
-  }
-
-  function _max(dim, metric, ds) {
-    return ds.reduce(function (a, b) {
-      return {
-        dim: dim,
-        val: a.val > b[metric] ? a.val : b[metric]
-      };
-    }, { val: 0 });
-  }
-
-  function _min(dim, metric, ds) {
-    return ds.reduce(function (a, b) {
-      return {
-        dim: dim,
-        val: a.val === 0 || a.val < b[metric] ? a.val : b[metric]
-      };
-    }, { val: 0 });
-  }
-
+    // method for minimum values
+    min: function min(dim, ds, metric) {
+      return ds.reduce(function (a, b) {
+        return {
+          dim: dim,
+          val: a.val === 0 || a.val < b[metric] ? a.val : b[metric]
+        };
+      }, {
+        val: 0
+      });
+    }
+  };
   return jSchema;
 });
