@@ -25,14 +25,16 @@ var table2 = [{
   "var3": "1/1/1978"
 }, {
   "var1": "xyz",
-  "var3": "1/1/1980"
+  "var3": "1/1  /1980"
 }];
-var s;
+var s, d, jSchemaInstance;
 
 requirejs(['jschema'],
   function(jSchema) {
     s = new jSchema;
   });
+
+jSchemaInstance = requirejs('jschema');
 
 describe("add", function() {
   it("should return an object of jschema", function() {
@@ -84,3 +86,73 @@ describe("filter", function() {
     assert.equal(s.get("work.t1_var1_abc").length, 2);
   });
 });
+
+describe("orderBy", function() {
+  it("should sort a table by ascending value", function() {
+    s.orderBy("t1", {
+      clause: "var2",
+      order: "ASC",
+      name: "orderByAsc"
+    })
+
+    var result = s.get("orderByAsc")
+
+    for (var i = 0; i < result.length - 2; i++) {
+      assert.ok(result[i].VAR2 < result[i+1].VAR2);
+    }
+  })
+
+  it("should sort a table by descending value", function() {
+    s.orderBy("t1", {
+      clause: "var2",
+      order: "DESC",
+      name: "orderByDesc"
+    })
+
+    var result = s.get("orderByDesc")
+
+    for (var i = 0; i < result.length - 2; i++) {
+      assert.ok(result[i].VAR2 > result[i+1].VAR2);
+    }
+  })
+})
+
+describe("update", function() {
+  it("should update a table with a new dataset", function() {
+    // Must use JSON to avoid keeping reference to original table
+    var beforeUpdate = JSON.parse(JSON.stringify(s.get("t1")))
+    var t1 = s.get("t1")
+
+    t1[0].VAR2 = 999
+    s.update("t1", t1)
+
+    var afterUpdate = s.get("t1")
+
+    assert.notDeepEqual(beforeUpdate, afterUpdate);
+  })
+})
+
+describe("insert", function() {
+  it("should insert array of objects to table", function() {
+    var initialLength = s.get("t1").length
+
+    s.insert("t1", [
+      {"var1": "asd", "var2": 1},
+      {"var1": "qwe", "var2": 777}
+    ])
+
+    var newLength = s.get("t1").length
+    assert.ok(newLength == initialLength + 2)
+  })
+})
+
+describe("cleanUp", function() {
+  it("should clean up everything that is in the work namespace", function() {
+    var initialLength = s.length
+    s.cleanUp()
+    var indexOfWork = JSON.stringify(s).indexOf("WORK.")
+    var newLength = s.length
+
+    assert.ok((newLength < initialLength) && (indexOfWork === -1))
+  })
+})
