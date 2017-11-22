@@ -38,19 +38,36 @@ jSchemaInstance = requirejs('jschema');
 
 describe("add", function() {
   it("should return an object of jschema", function() {
-    assert.ok(s.add(table));
+    assert.ok(s.add(table, {
+      name: "t0",
+      primaryKey: "var1"
+    } ));
   });
+
+  it("should fail to add table to schema (return 0)", function() {
+    assert.equal(s.add(""), 0)
+  });
+
+  it("should detect existing table in schema (return false)", function() {
+    assert.equal(s.add([], {
+      name: "t0"
+    }), false)
+  })
 });
 
 describe("get", function() {
-  it("should return a table table0", function() {
-    assert.equal(table, s.get("table0"));
+  it("should return a table t0", function() {
+    assert.equal(table, s.get("t0"));
+  });
+
+  it("should fail to return a table t7 (return false)", function() {
+    assert.equal(s.get("t7", false));
   });
 });
 
 describe("drop", function() {
   it("should return array of length 0", function() {
-    s.drop("table0")
+    s.drop("t0")
     assert.equal(s.length, 0);
   });
 });
@@ -70,6 +87,62 @@ describe("groupBy", function() {
     assert.equal(s.get("groupBy").length, 2);
     assert.equal(s.get("groupBy")[0].VAL, 250);
   });
+
+  it("should group by count", function() {
+    s.groupBy("T1", {
+      dim: "Var1",
+      metric: "Var2",
+      method: "COUNT",
+      name: "groupByCount"
+    })
+
+    assert.equal(s.get("groupByCount").length, 2);
+    assert.equal(s.get("groupByCount")[0].VAL, '2.00');
+    assert.equal(s.get("groupByCount")[1].VAL, '2.00');
+  });
+
+  it("should group by average", function() {
+    s.groupBy("T1", {
+      dim: "Var1",
+      metric: "Var2",
+      method: "AVERAGE",
+      name: "groupByAverage"
+    })
+
+    assert.equal(s.get("groupByAverage").length, 2);
+    assert.equal(s.get("groupByAverage")[0].VAL, '125.00');
+    assert.equal(s.get("groupByAverage")[1].VAL, '275.00');
+  });
+
+  it("should group by max", function() {
+    s.groupBy("T1", {
+      dim: "Var1",
+      metric: "Var2",
+      method: "MAX",
+      name: "groupByMax"
+    })
+
+    assert.equal(s.get("groupByMax").length, 2);
+    assert.equal(s.get("groupByMax")[0].VAL, '150.00');
+    assert.equal(s.get("groupByMax")[1].VAL, '300.00');
+  });
+
+  it("should group by min", function() {
+    s.groupBy("T1", {
+      dim: "Var1",
+      metric: "Var2",
+      method: "MIN",
+      name: "groupByMin"
+    })
+
+    assert.equal(s.get("groupByMin").length, 2);
+    assert.equal(s.get("groupByMin")[0].VAL, '100.00');
+    assert.equal(s.get("groupByMin")[1].VAL, '250.00');
+  });
+
+  it("should fail to group by table due to missin dimensions (return 0)", function() {
+    assert.equal(s.groupBy("T1"), 0);
+  });
 });
 
 describe("join", function() {
@@ -84,6 +157,10 @@ describe("filter", function() {
   it("should filter a table", function() {
     s.filter("t1", "var1", "abc")
     assert.equal(s.get("work.t1_var1_abc").length, 2);
+  });
+
+  it("should fail to filter a table due to missing arguments (return 0)", function() {
+    assert.equal(s.filter("t1", "var1"), 0);
   });
 });
 
