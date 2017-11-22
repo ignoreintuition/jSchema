@@ -27,14 +27,12 @@ var table2 = [{
   "var1": "xyz",
   "var3": "1/1  /1980"
 }];
-var s, d, jSchemaInstance;
+var s;
 
 requirejs(['jschema'],
   function(jSchema) {
     s = new jSchema;
   });
-
-jSchemaInstance = requirejs('jschema');
 
 describe("add", function() {
   it("should return an object of jschema", function() {
