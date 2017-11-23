@@ -2,6 +2,8 @@
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /*jshint esversion: 6 */
 
 define(function (require) {
@@ -9,7 +11,7 @@ define(function (require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    var VERSION = "0.5.3";
+    var VERSION = "0.5.4";
     var data = [],
         counter = 0,
         _schema = {
@@ -162,7 +164,7 @@ define(function (require) {
         }
       }
       var dataset = data[this.tables[d].id];
-      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method, attr.percision);
+      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method, attr.percision, attr.dimName);
       if (groupByData == 0) return 0;
       this.add(groupByData, {
         name: attr.name || "WORK." + d + "_" + attr.dim + "_" + attr.metric,
@@ -262,7 +264,7 @@ define(function (require) {
   function _checkUnique(d, a) {
     for (var key in a) {
       if (key == d) {
-        _log(1, name + " already exists in schema");
+        _log(1, d + " already exists in schema");
         return false;
       }
     }
@@ -313,7 +315,7 @@ define(function (require) {
 
   // method for aggregating datasets
   // TODO normalize function calls
-  function _aggregate(dataset, dim, metric, method, percision) {
+  function _aggregate(dataset, dim, metric, method, percision, dimName) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
     method = method || "SUM";
@@ -322,7 +324,7 @@ define(function (require) {
       var filterDataset = dataset.filter(function (d) {
         return d[dim] == uniqueDim;
       });
-      var reducedDataset = aggregateHelpers[method.toLowerCase()](uniqueDim, filterDataset, metric);
+      var reducedDataset = aggregateHelpers[method.toLowerCase()](uniqueDim, filterDataset, metric, dimName || dim);
       reducedDataset.val = reducedDataset.val.toFixed(percision || 2);
       groupByData.push(reducedDataset);
     });
@@ -331,35 +333,31 @@ define(function (require) {
 
   var aggregateHelpers = {
     // method for summing values
-    sum: function sum(dim, ds, metric) {
+    sum: function sum(dim, ds, metric, d) {
       return ds.reduce(function (a, b) {
-        return {
-          dim: dim,
-          val: a.val + b[metric]
-        };
+        var _ref;
+
+        return _ref = {}, _defineProperty(_ref, d, dim), _defineProperty(_ref, "val", a.val + b[metric]), _ref;
       }, {
         val: 0
       });
     },
     // method for counting values
-    count: function count(dim, ds) {
+    count: function count(dim, ds, metric, d) {
       return ds.reduce(function (a, b) {
-        return {
-          dim: dim,
-          val: a.val + 1
-        };
+        var _ref2;
+
+        return _ref2 = {}, _defineProperty(_ref2, d, dim), _defineProperty(_ref2, "val", a.val + 1), _ref2;
       }, {
         val: 0
       });
     },
     // method for averages
-    average: function average(dim, ds, metric) {
+    average: function average(dim, ds, metric, d) {
       var reducedDS = ds.reduce(function (a, b) {
-        return {
-          dim: dim,
-          sum: a.sum + b[metric],
-          count: a.count + 1
-        };
+        var _ref3;
+
+        return _ref3 = {}, _defineProperty(_ref3, d, dim), _defineProperty(_ref3, "sum", a.sum + b[metric]), _defineProperty(_ref3, "count", a.count + 1), _ref3;
       }, {
         sum: 0,
         count: 0
@@ -371,12 +369,11 @@ define(function (require) {
     },
 
     // method for maximum values
-    max: function max(dim, ds, metric) {
+    max: function max(dim, ds, metric, d) {
       return ds.reduce(function (a, b) {
-        return {
-          dim: dim,
-          val: a.val > b[metric] ? a.val : b[metric]
-        };
+        var _ref4;
+
+        return _ref4 = {}, _defineProperty(_ref4, d, dim), _defineProperty(_ref4, "val", a.val > b[metric] ? a.val : b[metric]), _ref4;
       }, {
         val: 0
       });
@@ -385,12 +382,11 @@ define(function (require) {
     // method for minimum values
     min: function min(dim, ds, metric) {
       return ds.reduce(function (a, b) {
-        return {
-          dim: dim,
-          val: a.val === 0 || a.val < b[metric] ? a.val : b[metric]
-        };
+        var _ref5;
+
+        return _ref5 = {}, _defineProperty(_ref5, dim, dim), _defineProperty(_ref5, "val", a.val === 0 || a.val < b[metric] ? a.val : b[metric]), _ref5;
       }, {
-        val: 0
+        val: Number.MAX_SAFE_INTEGER
       });
     }
   };

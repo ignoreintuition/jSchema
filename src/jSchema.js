@@ -5,7 +5,7 @@ define(function(require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    const VERSION = "0.5.3";
+    const VERSION = "0.5.4";
     var data = [],
       counter = 0,
       _schema = {
@@ -155,7 +155,7 @@ define(function(require) {
         }
       }
       var dataset = data[this.tables[d].id];
-      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method, attr.percision);
+      var groupByData = _aggregate(dataset, attr.dim, attr.metric, attr.method, attr.percision, attr.dimName);
       if (groupByData == 0) return 0;
       this.add(groupByData, {
         name: attr.name || "WORK." + d + "_" + attr.dim + "_" + attr.metric,
@@ -306,14 +306,14 @@ define(function(require) {
 
   // method for aggregating datasets
   // TODO normalize function calls
-  function _aggregate(dataset, dim, metric, method, percision) {
+  function _aggregate(dataset, dim, metric, method, percision, dimName) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
     method = method || "SUM";
     if (["SUM", "COUNT", "AVERAGE", "MIN", "MAX"].indexOf(method) == -1) return 0;
     uniqueDimensions.forEach(function(uniqueDim) {
       var filterDataset = dataset.filter(d => d[dim] == uniqueDim);
-      var reducedDataset = aggregateHelpers[method.toLowerCase()](uniqueDim, filterDataset, metric);
+      var reducedDataset = aggregateHelpers[method.toLowerCase()](uniqueDim, filterDataset, metric, dimName || dim);
       reducedDataset.val = reducedDataset.val.toFixed(percision || 2);
       groupByData.push(reducedDataset);
     });
@@ -322,10 +322,10 @@ define(function(require) {
 
   var aggregateHelpers = {
     // method for summing values
-    sum: function(dim, ds, metric) {
+    sum: function(dim, ds, metric, dName) {
       return ds.reduce((a, b) => {
         return {
-          dim: dim,
+          [dName]: dim,
           val: a.val + b[metric]
         };
       }, {
@@ -333,10 +333,10 @@ define(function(require) {
       });
     },
     // method for counting values
-    count: function(dim, ds) {
+    count: function(dim, ds, metric, d) {
       return ds.reduce((a, b) => {
         return {
-          dim: dim,
+          [dName]: dim,
           val: a.val + 1
         };
       }, {
@@ -344,10 +344,10 @@ define(function(require) {
       });
     },
     // method for averages
-    average: function(dim, ds, metric) {
+    average: function(dim, ds, metric, d) {
       var reducedDS = ds.reduce((a, b) => {
         return {
-          dim: dim,
+          [dName]: dim,
           sum: a.sum + b[metric],
           count: a.count + 1
         };
@@ -362,10 +362,10 @@ define(function(require) {
     },
 
     // method for maximum values
-    max: function(dim, ds, metric) {
+    max: function(dim, ds, metric, d) {
       return ds.reduce((a, b) => {
         return {
-          dim: dim,
+          [dName]: dim,
           val: a.val > b[metric] ? a.val : b[metric]
         };
       }, {
@@ -377,7 +377,7 @@ define(function(require) {
     min: function(dim, ds, metric) {
       return ds.reduce((a, b) => {
         return {
-          dim: dim,
+          [dName]: dim,
           val: (a.val === 0 || a.val < b[metric]) ? a.val : b[metric]
         };
       }, {

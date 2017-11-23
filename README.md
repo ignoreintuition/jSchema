@@ -87,7 +87,8 @@ s.groupBy("GENDER", {
   metric: "Count",
   name: "groupBy",
   method: "sum", // supported methods are sum, count, average, min, max
-  percision: 2 // default is 2
+  percision: 2, // default is 2
+  dimName: "GenderPK" // use if you need to rename the dimension
 })
 ```
 Output
