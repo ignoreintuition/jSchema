@@ -17,7 +17,7 @@ var s = new jSchema({
 
 ## Demo
 
-A complete working demo of how to load tables, join tables, and aggregate tables can be found in the repository in the demo folder.  
+A complete working demo of how to load tables, join tables, and aggregate tables can be found in the repository in the demo folder.  A live demo can be found on the libraries homepage: [live demo](http://resurgencewebdesign.com/refugee/)
 
 
 ## How to Use
