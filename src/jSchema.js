@@ -254,7 +254,7 @@ define(function(require) {
   function _checkUnique(d, a) {
     for (var key in a) {
       if (key == d) {
-        _log(1, name + " already exists in schema");
+        _log(1, d + " already exists in schema");
         return false;
       }
     }
@@ -381,7 +381,7 @@ define(function(require) {
           val: (a.val === 0 || a.val < b[metric]) ? a.val : b[metric]
         };
       }, {
-        val: 0
+        val: Number.MAX_SAFE_INTEGER
       });
     }
   };
