@@ -20,17 +20,18 @@ requirejs(["../../dist/jschema.min"], function(jSchema) {
 });
 
 function getTable(table, s) {
-  var header = ``;
+  var header = `<div class="group">`;
   s.tables[table].col.forEach((d) => {
     header += `<div class="rc header">${d}</div>`
   })
-  header += `<br>`
+  header += `</div>`
   let rows = ``;
   s.get(table).forEach((d) => {
+    rows += `<div class="group">`;
     s.tables[table].col.forEach((e, i) => {
       rows += `<div class="rc">${d[e]}</div>`
     })
-    rows += `<br>`;
+    rows += `</div>`;
   })
   return header + rows;
 }

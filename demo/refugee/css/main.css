@@ -11,3 +11,9 @@
   background-color: #3333FF;
   color: #E0E0E0;
 }
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}

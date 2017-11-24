@@ -1,8 +1,19 @@
 .rc {
   width: 220px;
   float: left;
+  padding: 4px;
+  border: 1px solid white;
+  background-color: #CCE5FF;
 }
 
 .header {
   font-weight: bold;
+  background-color: #3333FF;
+  color: #E0E0E0;
+}
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
 }
