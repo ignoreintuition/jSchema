@@ -1,4 +1,4 @@
-requirejs(["../../dist/jschema"], function(jSchema) {
+requirejs(["../../dist/jschema.min", "../modules/Table"], function(jSchema, getTable) {
   var s = new jSchema({
     "caseSensitive": true
   });
@@ -39,20 +39,3 @@ requirejs(["../../dist/jschema"], function(jSchema) {
       })
     )
 });
-
-function getTable(table, s) {
-  var header = `<div class="group">`;
-  s.tables[table].col.forEach((d) => {
-    header += `<div class="rc header">${d}</div>`
-  })
-  header += `</div>`
-  let rows = ``;
-  s.get(table).forEach((d) => {
-    rows += `<div class="group">`;
-    s.tables[table].col.forEach((e, i) => {
-      rows += `<div class="rc">${d[e]}</div>`
-    })
-    rows += `</div>`;
-  })
-  return header + rows;
-}
