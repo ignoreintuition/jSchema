@@ -129,13 +129,14 @@ s.insert("TABLE0", {
 });
 ```
 
-### Remove columns
+### REMOVE COLUMNS
 If you want to completely remove a column use removeCol to create a clone of the table with the column removed.  Pass the dataset as the first argument and the attributes as the second argument.  Attributes are `col` for the column to be removed and `name` for the name of the table to clone the table to.  Name is optional and if it is not used it will copy the data to the work namespace.  
 
 ```Javascript
-  s.removeCol("COMPLETE", {
-    "col": "REFUGEES_BY_DEST.STATE",
-    "name": "TEST"})
+s.removeCol("COMPLETE", {
+  "col": "REFUGEES_BY_DEST.STATE",
+  "name": "TEST"
+});
 ```
 
 By default all temporary datasets (joins, group by, order by) added to the schema will be prefixed with the namespace WORK. (e.g. joining two tables NAMES and LOCATIONS will result in a table added to the schema called WORK.NAMES_LOCATIONS).  Calling the cleanUp method will remove all datasets added to the work namespace
