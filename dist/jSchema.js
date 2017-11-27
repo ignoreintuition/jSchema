@@ -11,7 +11,7 @@ define(function (require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    var VERSION = "0.5.4";
+    var VERSION = "0.5.5";
     var data = [],
         counter = 0,
         _schema = {
@@ -230,6 +230,37 @@ define(function (require) {
       return this;
     };
 
+    // Remove a columne from a dataset
+    // @namespace jSchema
+    // @method update
+    // @param {String} d dataset
+    // @param {Object} attributes
+    _schema.removeCol = function (d, attr) {
+      attr = attr || {};
+      if (attr.col === undefined) {
+        _log(1, "Must include a column name to remove");
+        return 0;
+      }
+      console.log(attr.name);
+      attr.name = attr.name == undefined ? "WORK." + d + attr.col + "REMOVED" : attr.name;
+      if (this.caseSensitive) {
+        d = d.toUpperCase();
+        attr.col = attr.col.toUpperCase();
+        attr.name = attr.name.toUpperCase();
+      }
+      console.log(attr.name);
+      if (_checkForTable(d, this.tables) === false) return;
+
+      var ds = JSON.parse(JSON.stringify(data[this.tables[d].id]));
+      ds.forEach(function (r) {
+        delete r[attr.col];
+      });
+      this.add(ds, {
+        "name": attr.name,
+        "primaryKey": this.tables[d].pkid
+      });
+    };
+
     // clean up everything that is in the work namespace
     // @namespace jSchema
     // @method cleanUp
@@ -333,31 +364,31 @@ define(function (require) {
 
   var aggregateHelpers = {
     // method for summing values
-    sum: function sum(dim, ds, metric, d) {
+    sum: function sum(dim, ds, metric, dName) {
       return ds.reduce(function (a, b) {
         var _ref;
 
-        return _ref = {}, _defineProperty(_ref, d, dim), _defineProperty(_ref, "val", a.val + b[metric]), _ref;
+        return _ref = {}, _defineProperty(_ref, dName, dim), _defineProperty(_ref, "val", a.val + b[metric]), _ref;
       }, {
         val: 0
       });
     },
     // method for counting values
-    count: function count(dim, ds, metric, d) {
+    count: function count(dim, ds, metric, dName) {
       return ds.reduce(function (a, b) {
         var _ref2;
 
-        return _ref2 = {}, _defineProperty(_ref2, d, dim), _defineProperty(_ref2, "val", a.val + 1), _ref2;
+        return _ref2 = {}, _defineProperty(_ref2, dName, dim), _defineProperty(_ref2, "val", a.val + 1), _ref2;
       }, {
         val: 0
       });
     },
     // method for averages
-    average: function average(dim, ds, metric, d) {
+    average: function average(dim, ds, metric, dName) {
       var reducedDS = ds.reduce(function (a, b) {
         var _ref3;
 
-        return _ref3 = {}, _defineProperty(_ref3, d, dim), _defineProperty(_ref3, "sum", a.sum + b[metric]), _defineProperty(_ref3, "count", a.count + 1), _ref3;
+        return _ref3 = {}, _defineProperty(_ref3, dName, dim), _defineProperty(_ref3, "sum", a.sum + b[metric]), _defineProperty(_ref3, "count", a.count + 1), _ref3;
       }, {
         sum: 0,
         count: 0
@@ -369,22 +400,22 @@ define(function (require) {
     },
 
     // method for maximum values
-    max: function max(dim, ds, metric, d) {
+    max: function max(dim, ds, metric, dName) {
       return ds.reduce(function (a, b) {
         var _ref4;
 
-        return _ref4 = {}, _defineProperty(_ref4, d, dim), _defineProperty(_ref4, "val", a.val > b[metric] ? a.val : b[metric]), _ref4;
+        return _ref4 = {}, _defineProperty(_ref4, dName, dim), _defineProperty(_ref4, "val", a.val > b[metric] ? a.val : b[metric]), _ref4;
       }, {
         val: 0
       });
     },
 
     // method for minimum values
-    min: function min(dim, ds, metric) {
+    min: function min(dim, ds, metric, dName) {
       return ds.reduce(function (a, b) {
         var _ref5;
 
-        return _ref5 = {}, _defineProperty(_ref5, dim, dim), _defineProperty(_ref5, "val", a.val === 0 || a.val < b[metric] ? a.val : b[metric]), _ref5;
+        return _ref5 = {}, _defineProperty(_ref5, dName, dim), _defineProperty(_ref5, "val", a.val === 0 || a.val < b[metric] ? a.val : b[metric]), _ref5;
       }, {
         val: Number.MAX_SAFE_INTEGER
       });

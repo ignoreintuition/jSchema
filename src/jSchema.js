@@ -5,7 +5,7 @@ define(function(require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    const VERSION = "0.5.4";
+    const VERSION = "0.5.5";
     var data = [],
       counter = 0,
       _schema = {
@@ -219,6 +219,34 @@ define(function(require) {
       return this;
     };
 
+    // Remove a columne from a dataset
+    // @namespace jSchema
+    // @method update
+    // @param {String} d dataset
+    // @param {Object} attributes
+    _schema.removeCol = function(d, attr) {
+      attr = attr || {};
+      if (attr.col === undefined) {
+        _log(1, "Must include a column name to remove");
+        return 0;
+      }
+      attr.name = (attr.name == undefined ? "WORK." + d + attr.col + "REMOVED" : attr.name);
+      if (this.caseSensitive){
+        d = d.toUpperCase();
+        attr.col = attr.col.toUpperCase();
+        attr.name = attr.name.toUpperCase();
+      }
+      if (_checkForTable(d, this.tables) === false) return;
+
+      var ds = JSON.parse(JSON.stringify(data[this.tables[d].id]));
+      ds.forEach(function(r){
+        delete r[attr.col];
+      });
+      this.add(ds, {
+        "name": attr.name,
+        "primaryKey": this.tables[d].pkid
+      });
+    };
 
     // clean up everything that is in the work namespace
     // @namespace jSchema
@@ -333,7 +361,7 @@ define(function(require) {
       });
     },
     // method for counting values
-    count: function(dim, ds, metric, d) {
+    count: function(dim, ds, metric, dName) {
       return ds.reduce((a, b) => {
         return {
           [dName]: dim,
@@ -344,7 +372,7 @@ define(function(require) {
       });
     },
     // method for averages
-    average: function(dim, ds, metric, d) {
+    average: function(dim, ds, metric, dName) {
       var reducedDS = ds.reduce((a, b) => {
         return {
           [dName]: dim,
@@ -362,7 +390,7 @@ define(function(require) {
     },
 
     // method for maximum values
-    max: function(dim, ds, metric, d) {
+    max: function(dim, ds, metric, dName) {
       return ds.reduce((a, b) => {
         return {
           [dName]: dim,
@@ -374,7 +402,7 @@ define(function(require) {
     },
 
     // method for minimum values
-    min: function(dim, ds, metric) {
+    min: function(dim, ds, metric, dName) {
       return ds.reduce((a, b) => {
         return {
           [dName]: dim,

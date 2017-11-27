@@ -23,7 +23,8 @@ requirejs(["../../dist/jschema.min", "../modules/Table"], function(jSchema, getT
             dimName: "STATE"
           })
           s.join("POPULATION", "REFUGEES_BY_DEST", {name: "COMPLETE"});
-          var content = getTable("COMPLETE", s);
+          s.removeCol("COMPLETE", {"col": "REFUGEES_BY_DEST.STATE", "name": "TEST"})
+          var content = getTable("TEST", s);
           document.getElementById("target2").insertAdjacentHTML("beforeend", content);
           console.log(s);
         })
