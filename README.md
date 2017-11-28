@@ -2,7 +2,7 @@
 
 ![logo](https://user-images.githubusercontent.com/5210420/32085476-48b25564-ba9d-11e7-8a6e-9e2df9cd5ed5.png)
 
-Data Modeling in JavaScript
+# Data Modeling in JavaScript
 jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets into in a common schema, define relationships, aggregate, join, and subset datasets to make data easier to work with in the browser.
 
 ![entity relationship diagram - new page 1](https://user-images.githubusercontent.com/5210420/32084304-50e6bdbc-ba96-11e7-92b8-cfab13866fe0.png)
@@ -130,7 +130,7 @@ s.insert("TABLE0", {
 ```
 
 ### REMOVE COLUMNS
-If you want to completely remove a column use removeCol to create a clone of the table with the column removed.  Pass the dataset as the first argument and the attributes as the second argument.  Attributes are `col` for the column to be removed and `name` for the name of the table to clone the table to.  Name is optional and if it is not used it will copy the data to the work namespace.  
+If you want to completely remove a column use removeCol to create a clone of the table with the column removed.  Pass the dataset as the first argument and the attributes as the second argument.  Attributes are `col` for the column to be removed and `name` for the name of the table to clone the table to.  Name is optional and if it is not used it will copy the data to the work namespace.
 
 ```Javascript
 s.removeCol("COMPLETE", {
