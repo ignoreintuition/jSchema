@@ -159,9 +159,10 @@ s.cleanUp();
 # Testing
 To run mocha test scripts from the terminal type:
 
-Install all dependencies for development, `npm install .`.
-
-Run mocha test script, `npm run test`.
+```JavaScript
+npm install
+npm run test
+```
 
 # Contact
 Questions, comments, feature requests, etc are always welcome.  I am [@ignoreintuition](https://twitter.com/IgnoreIntuition) on Twitter.
