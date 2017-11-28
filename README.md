@@ -135,8 +135,19 @@ If you want to completely remove a column use removeCol to create a clone of the
 ```Javascript
 s.removeCol("COMPLETE", {
   "col": "REFUGEES_BY_DEST.STATE",
-  "name": "TEST"
+  "name": "REFUGEES_CLEAN"
 });
+```
+
+### ADD COLUMNS
+In order to add a new column to a dataset you need to call the addCol method.  This will take an expression (two columns and an arithmetic operator) and combine them into a new field.  The function will greate a new dataset with the name passed in the attribute `name` and will return the schema object.  If name is not provided it will create a dataset in the WORK namespace
+
+```JavaScript
+s.addCol("REFUGEES_CLEAN", {
+  "name": "REFUGEES_ARITHMETIC",
+  "expression": "REFUGEES_BY_DEST.VAL / POPULATION.POP_EST_2014",
+  "colName": "AVG_POP_DEST"
+})
 ```
 
 By default all temporary datasets (joins, group by, order by) added to the schema will be prefixed with the namespace WORK. (e.g. joining two tables NAMES and LOCATIONS will result in a table added to the schema called WORK.NAMES_LOCATIONS).  Calling the cleanUp method will remove all datasets added to the work namespace

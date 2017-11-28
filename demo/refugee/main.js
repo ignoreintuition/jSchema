@@ -22,8 +22,19 @@ requirejs(["../../dist/jschema.min", "../modules/Table"], function(jSchema, getT
             percision: 2, // default is 2
             dimName: "STATE"
           })
-          s.join("POPULATION", "REFUGEES_BY_DEST", {name: "COMPLETE"});
-          s.removeCol("COMPLETE", {"col": "REFUGEES_BY_DEST.STATE", "name": "TEST"})
+          s.join("POPULATION", "REFUGEES_BY_DEST", {
+            name: "COMPLETE"
+          });
+          s.removeCol("COMPLETE", {
+            "col": "REFUGEES_BY_DEST.STATE",
+            "name": "TEST"
+          })
+          s.addCol("TEST", {
+            "name": "thisTable",
+            "expression": "POPULATION.POP_EST_2014 + REFUGEES_BY_DEST.VAL",
+            "colName": "newColName"
+          })
+          console.log(s.get("thisTable"));
           var content = getTable("TEST", s);
           document.getElementById("target2").insertAdjacentHTML("beforeend", content);
           console.log(s);

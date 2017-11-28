@@ -5,7 +5,7 @@ define(function(require) {
 
   function jSchema(attr) {
     attr = attr || {};
-    const VERSION = "0.5.5";
+    const VERSION = "0.5.6";
     var data = [],
       counter = 0,
       _schema = {
@@ -219,9 +219,9 @@ define(function(require) {
       return this;
     };
 
-    // Remove a columne from a dataset
+    // Remove a column from a dataset
     // @namespace jSchema
-    // @method update
+    // @method removeCol
     // @param {String} d dataset
     // @param {Object} attributes
     _schema.removeCol = function(d, attr) {
@@ -231,16 +231,44 @@ define(function(require) {
         return 0;
       }
       attr.name = (attr.name == undefined ? "WORK." + d + attr.col + "REMOVED" : attr.name);
-      if (this.caseSensitive){
+      if (this.caseSensitive) {
         d = d.toUpperCase();
         attr.col = attr.col.toUpperCase();
         attr.name = attr.name.toUpperCase();
       }
       if (_checkForTable(d, this.tables) === false) return;
-
       var ds = JSON.parse(JSON.stringify(data[this.tables[d].id]));
-      ds.forEach(function(r){
+      ds.forEach(function(r) {
         delete r[attr.col];
+      });
+      this.add(ds, {
+        "name": attr.name,
+        "primaryKey": this.tables[d].pkid
+      });
+      return this;
+    };
+
+    // add a column to a dataset
+    // @namespace jSchema
+    // @method addCol
+    // @param {String} d dataset
+    // @param {Object} attributes
+    _schema.addCol = function(d, attr) {
+      attr = attr || {};
+      if (attr.expression === undefined || attr.colName === undefined) {
+        _log(1, "Must include expression and name for new column");
+      }
+      attr.name = (attr.name == undefined ? "WORK." + d + attr.colName + "_EXPRESSION" : attr.name);
+      if (this.caseSensitive) {
+        d = d.toUpperCase();
+        attr.name = attr.name.toUpperCase();
+        attr.colName = attr.colName.toUpperCase();
+      }
+      if (_checkForTable(d, this.tables) === false) return;
+      let exp = _parseExpression(data[this.tables[d].id], attr.expression);
+      var ds = JSON.parse(JSON.stringify(data[this.tables[d].id]));
+      ds.forEach(function(c) {
+        c[attr.colName] = mathHelpers[exp[1]](Number.parseFloat(c[exp[0]]), Number.parseFloat(c[exp[2]]));
       });
       this.add(ds, {
         "name": attr.name,
@@ -332,8 +360,35 @@ define(function(require) {
       console.log(log[c] + ": " + t);
   }
 
+  function _parseExpression(d, e) {
+    let expression = e.split(" ");
+    if (["+", "-", "/", "*", "^", "%"].indexOf(expression[1]) == -1) return 0;
+    if (d[0][expression[0]] == undefined || d[0][expression[2]] == undefined) return 0;
+    return expression;
+  }
+
+  var mathHelpers = {
+    "+": function(x, y) {
+      return x + y;
+    },
+    "-": function(x, y) {
+      return x - y;
+    },
+    "/": function(x, y) {
+      return x / y;
+    },
+    "*": function(x, y) {
+      return x * y;
+    },
+    "^": function(x, y) {
+      return x ^ y;
+    },
+    "%": function(x, y) {
+      return x % y;
+    }
+  };
+
   // method for aggregating datasets
-  // TODO normalize function calls
   function _aggregate(dataset, dim, metric, method, percision, dimName) {
     var uniqueDimensions = _distinct(dataset, dim);
     var groupByData = [];
