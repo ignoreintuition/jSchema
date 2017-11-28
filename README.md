@@ -61,7 +61,7 @@ s.join("EDUCATION", "GENDER", {name: "joinTable"})
 ```
 
 ### DROP
-You can drop tables that are no longer needed in the schema with the drop method
+You can drop tables that are no longer needed in the schema with the drop method:
 
 ```Javascript
 s.drop("GENDER")
@@ -105,7 +105,7 @@ Output
 ```
 
 ### FILTER
-To filter a dataset you can call the filter method and pass three of more arguments.  First argument is always the table name.  The second and third are the field to filter by and the value to filter it on.  Additional pairs can be included as 4th, 5th parameters and so on.  A filtered dataset will be created in the WORK space.
+To filter a dataset you can call the filter method and pass three or more arguments.  First argument is always the table name.  The second and third are the field to filter by, and the value to filter it on.  Additional pairs can be included as fourth, fifth parameters and so on.  A filtered dataset will be created in the WORK space.
 
 ```Javascript
 s.filter('GENDER', 'Gender', 'Female')
