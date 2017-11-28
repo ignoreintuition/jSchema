@@ -3,11 +3,11 @@
 ![logo](https://user-images.githubusercontent.com/5210420/32085476-48b25564-ba9d-11e7-8a6e-9e2df9cd5ed5.png)
 
 # Data Modeling in JavaScript
-jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets into in a common schema, define relationships, aggregate, join, and subset datasets to make data easier to work with in the browser.
+jSchema is a framework for modeling data in JavaScript.  By using fundamental data modeling principles you are able to pull multiple datasets into a common schema, define relationships, aggregate, join, and subset datasets to make data easier to work with in the browser.
 
 ![entity relationship diagram - new page 1](https://user-images.githubusercontent.com/5210420/32084304-50e6bdbc-ba96-11e7-92b8-cfab13866fe0.png)
 
-jSchema is going to create an object called `jSchema`.  This object is a metadata representation of all your datasets containing the table names, column names, and keys that define sets.  The data itself is stored within a closure within the object and is retrieved via a getter function.  Joining data, aggregating data, and filtering data will create a new dataset in your WORK namespace that will persist on the page until either you delete the table or you run a cleanUp method.  By default jSchema will be case insensitive.  This can be overwritten with:
+jSchema is going to create an object called `jSchema`.  This object is a metadata representation of all your datasets containing the table names, column names, and keys that define sets.  The data itself is stored in a closure within the object and is retrieved via a getter function.  Joining data, aggregating data, and filtering data will create a new dataset in your WORK namespace that will persist on the page until either you delete the table or you run a cleanUp method.  By default jSchema will be case sensitive.  This can be overwritten with:
 
 ```JavaScript
 var s = new jSchema({
