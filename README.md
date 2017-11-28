@@ -23,7 +23,7 @@ A complete working demo of how to load tables, join tables, and aggregate tables
 ## How to Use
 
 ### NPM
-If you use npm, `npm install jschema.js`.
+If you use npm, `npm install jschema`.
 
 ### requirejs
 jschema.js uses requirejs to modularly load the library and is included in the package.json.  require.js can be moved to the lib directory of your project and included as
