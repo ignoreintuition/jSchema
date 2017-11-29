@@ -29,9 +29,10 @@ var table2 = [{
 }];
 var s;
 
-requirejs(['jschema'],
+// set first argument to where you have jSchema.js stored, (e.g. ../lib/jSchema)
+requirejs(['../dist/jSchema'],
   function(jSchema) {
-    s = new jSchema;
+    s = new jSchema();
   });
 
 describe("add", function() {
