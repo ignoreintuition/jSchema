@@ -27,12 +27,12 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
-    "jshint": "^2.9.5",
-    "mocha": "^4.0.1",
-    "nyc": "^11.3.0",
-    "requirejs": "^2.3.5",
-    "uglify-es": "^3.1.8",
-    "uglify-js": "^3.1.5"
+    "jshint": "^2.13.6",
+    "mocha": "^11.7.4",
+    "nyc": "^17.1.0",
+    "requirejs": "^2.3.7",
+    "uglify-es": "^3.3.9",
+    "uglify-js": "^3.19.3"
   },
   "dependencies": {}
 }
